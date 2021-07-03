@@ -9,10 +9,9 @@ RUN mkdir /opt/monitoring/
 RUN wget https://dl.influxdata.com/telegraf/releases/telegraf_1.19.0-1_amd64.deb
 RUN dpkg -i telegraf_1.19.0-1_amd64.deb
 RUN mkdir /opt/monitoring/telegraf/
-COPY ./telegraf/telegraf.conf /opt/monitoring/telegraf/
 
-# copy NETCONF script/file into the telegraf monitoring folder
-COPY ./telegraf/netconf-interfaces.py /opt/monitoring/telegraf/
+# copy NETCONF scripts/files and telegraf config file into the telegraf monitoring folder
+COPY ./telegraf/* /opt/monitoring/telegraf/
 RUN chmod +x /opt/monitoring/telegraf/*
 
 RUN pip3 install ncclient xmltodict

@@ -32,6 +32,7 @@ def main():
         hostkey_verify=False,
         device_params = {'name': 'iosxe'}
     ) as m:
+        # https://github.com/YangModels/yang/blob/master/vendor/cisco/xe/16111/ietf-interfaces.yang
         netconf_filter = """
         <filter xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
                 <interfaces-state xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
