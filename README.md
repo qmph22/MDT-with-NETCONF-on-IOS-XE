@@ -19,6 +19,8 @@ docker-compose build
 docker-compose up
 ```
 
+> Set the username, password, and port for NETCONF related files (`netconf-*.py`) in the `telegraf/` folder.
+
 Once the apps are up and running, you can view the Prometheus console at `localhost:9090` on your browser.
 
 ## PromQL queries supported
@@ -27,3 +29,5 @@ Once the apps are up and running, you can view the Prometheus console at `localh
 - intf_stats_in_errors
 - intf_stats_out_octets
 - intf_stats_out_errors
+- cpu_process_consumed_bytes
+- memory_pool_percent_used
