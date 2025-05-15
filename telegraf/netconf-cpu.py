@@ -25,7 +25,7 @@ def dict_to_telegraf_json(rpc_reply_dict: Dict) -> str:
 def main():
     with manager.connect(
         host = "10.0.0.1",  # Locally connected device. Will eventually make this a configurable item
-        port = 10000,
+        port = 830,
         username = "admin",
         password = "admin",  # <------- enter device password
         hostkey_verify=False,
