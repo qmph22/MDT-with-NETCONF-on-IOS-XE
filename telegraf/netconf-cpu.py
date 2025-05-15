@@ -56,6 +56,7 @@ def main():
             netconf_rpc_reply = m.get(
                 filter = netconf_filter
             ).xml
+            
         netconf_reply_dict = xmltodict.parse(netconf_rpc_reply)
 
         telegraf_json_input = dict_to_telegraf_json(netconf_reply_dict)
