@@ -18,7 +18,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -85,6 +84,100 @@
         "x": 0,
         "y": 0
       },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "memory_pool_percent_used{name=\"Processor\"}",
+          "instant": false,
+          "legendFormat": "{{host}} Memory Utilization Percentage",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Device Resource Utilization",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
       "id": 1,
       "options": {
         "legend": {
@@ -106,7 +199,7 @@
           },
           "editorMode": "builder",
           "expr": "cellular_modem_radio_rsrp{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
-          "legendFormat": "__auto",
+          "legendFormat": "{{name}} RSRP",
           "range": true,
           "refId": "A"
         },
@@ -118,7 +211,7 @@
           "editorMode": "builder",
           "expr": "cellular_modem_radio_rsrq{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
           "hide": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{name}} RSRQ",
           "range": true,
           "refId": "B"
         },
@@ -130,7 +223,7 @@
           "editorMode": "builder",
           "expr": "cellular_modem_radio_rssi{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
           "hide": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{name}} RSSI",
           "range": true,
           "refId": "C"
         },
@@ -142,7 +235,7 @@
           "editorMode": "builder",
           "expr": "cellular_modem_radio_snr{name=~\"Cellular0/2/1|Cellular0/3/1\"}",
           "hide": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{name}} SNR",
           "range": true,
           "refId": "D"
         }
@@ -166,6 +259,6 @@
   "timezone": "",
   "title": "Cellular Modem Statistics",
   "uid": "d95e079a-79fa-4593-84cc-78bb0264e16b",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }

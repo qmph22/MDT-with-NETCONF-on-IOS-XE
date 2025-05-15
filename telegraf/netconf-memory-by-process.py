@@ -7,16 +7,19 @@ def dict_to_telegraf_json(rpc_reply_dict: Dict) -> str:
     """
     """
 
-    stats_array = []
-    for item, value in rpc_reply_dict["rpc-reply"]["data"]["cpu-usage"]["cpu-utilization"].items():
-        dict = {
-            "time_period": item,
-            "utilization_percentage": value,
-            "field": "cpu_utilization"
-        }  # trying to get rate of consumption of processes
-        stats_array.append(dict)
+    cpu_process_stats_array = []
 
-    return json.dumps(stats_array)  # return JSON formatted data
+    for process_entry in rpc_reply_dict["rpc-reply"]["data"]["memory-usage-processes"]["memory-usage-process"]:
+        if int(process_entry["allocated-memory"]) > 0:
+            process_dict = {
+                "name": process_entry["name"].replace(" ", "_"),
+                "process_id": int(process_entry["pid"]),
+                "consumed_bytes": int(process_entry["holding-memory"]),
+                "field": "cpu_process"
+            }  # trying to get rate of consumption of processes
+            cpu_process_stats_array.append(process_dict)
+
+    return json.dumps(cpu_process_stats_array)  # return JSON formatted data
 
 
 def main():
@@ -31,12 +34,15 @@ def main():
         # https://github.com/YangModels/yang/blob/master/vendor/cisco/xe/16111/Cisco-IOS-XE-process-memory-oper.yang
         netconf_filter = """
         <filter xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-            <cpu-usage xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-process-cpu-oper">
-                <cpu-utilization>
-                <five-seconds/>
-                <one-minute/>
-                </cpu-utilization>
-            </cpu-usage>
+            <memory-usage-processes xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-process-memory-oper">
+                <memory-usage-process>
+                    <name/>
+                    <pid/>
+                    <allocated-memory/>
+                    <freed-memory/>
+                    <holding-memory/>
+                </memory-usage-process>
+            </memory-usage-processes>
         </filter>
         """
 
@@ -45,7 +51,7 @@ def main():
         ).xml
 
         netconf_reply_dict = xmltodict.parse(netconf_rpc_reply)
-
+        
         telegraf_json_input = dict_to_telegraf_json(netconf_reply_dict)
 
         # telegraf needs data in a certain data format.
