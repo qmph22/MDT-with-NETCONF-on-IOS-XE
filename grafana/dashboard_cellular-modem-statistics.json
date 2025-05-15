@@ -175,8 +175,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 8
+        "x": 12,
+        "y": 0
       },
       "id": 1,
       "options": {
@@ -240,8 +240,221 @@
           "refId": "D"
         }
       ],
-      "title": "Panel Title",
+      "title": "Cellular Modem Statistics - Over Time",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": -90
+              },
+              {
+                "color": "#EAB839",
+                "value": -83
+              },
+              {
+                "color": "dark-green",
+                "value": -80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.5.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+          },
+          "editorMode": "builder",
+          "expr": "cellular_modem_radio_rssi{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
+          "legendFormat": "{{name}} RSSI",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Cellular Modem Statistics - RSSI",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": -18
+              },
+              {
+                "color": "#EAB839",
+                "value": -15
+              },
+              {
+                "color": "dark-green",
+                "value": -12
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.5.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+          },
+          "editorMode": "builder",
+          "expr": "cellular_modem_radio_rsrq{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
+          "legendFormat": "{{name}} RSRQ",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Cellular Modem Statistics - RSRQ",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": -111
+              },
+              {
+                "color": "#EAB839",
+                "value": -108
+              },
+              {
+                "color": "dark-green",
+                "value": -105
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 6,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.5.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+          },
+          "editorMode": "builder",
+          "expr": "cellular_modem_radio_rsrp{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
+          "legendFormat": "{{name}} RSRP",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Cellular Modem Statistics - RSRP",
+      "type": "gauge"
     }
   ],
   "refresh": "",
@@ -259,6 +472,6 @@
   "timezone": "",
   "title": "Cellular Modem Statistics",
   "uid": "d95e079a-79fa-4593-84cc-78bb0264e16b",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }
