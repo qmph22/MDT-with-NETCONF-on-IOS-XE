@@ -14,3 +14,17 @@ services:
             - "9090:9090"
         depends_on:
             - "telegraf"
+    grafana:
+        build: ./grafana
+        container_name: ${CONTAINER_PREFIX}_grafana
+        ports: 
+            - ${GRAFANA_PORT}:${GRAFANA_PORT}
+        links:
+            - prometheus
+        volumes:
+            - /var/lib/grafana
+            - /var/log/grafana
+            - /var/lib/grafana/plugins
+        restart: always
+        env_file:
+            - .env
