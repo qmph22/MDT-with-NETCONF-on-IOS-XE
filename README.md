@@ -1,12 +1,13 @@
 # Monitoring using NETCONF
 
-I started this on a Saturday, just because I wanted to better understand:
+The goal here is to get telemetry data with NETCONF.
+Components:
+- NETCONF-capable Device - Used a Cisco IOS-XE device in this instance
+- Telegraf - Data Collection
+- Prometheus - Time-Series Database
+- Grafana - Visualization
 
-- NETCONF
-- Telegraf
-- Working with time series data on Prometheus
-
-All just for fun!
+Forked from https://github.com/anirudhkamath/monitoring-practice-with-netconf
 
 ## Requirements
 
@@ -23,7 +24,7 @@ docker-compose up
 
 Once the apps are up and running, you can view the Prometheus console at `localhost:9090` on your browser.
 
-## PromQL queries supported
+## PromQL queries supported (need to update this list)
 
 - intf_stats_in_octets
 - intf_stats_in_errors
