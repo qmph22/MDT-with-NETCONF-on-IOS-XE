@@ -1,30 +1,15 @@
 ---
 # Network devices to pull telemetry data from
 devices:
-    - router1:
-        host: 10.0.0.1
+    router1:
+        host: 192.168.131.100
         port: 830
         credentials:
             #any name can be used here
-            - cred1:
+            cred1:
                 username: admin
                 # The password from environmental variables. It can be a list
                 password_env: ROUTERS_PASSWORD
         hostkey_verify: false
         device_params:
-            - name: 'iosxe'
-    - router2:
-        host: 10.0.0.2
-        port: 830
-        credentials:
-            #any name can be used here
-            - cred1:
-                username: admin
-                # The password from environmental variables. It can be a list
-                password_env: ROUTERS_PASSWORD
-            - cred2:
-                username: admin2
-                password_env: ROUTERS_PASSWORD2
-        hostkey_verify: false
-        device_params:
-            - name: 'iosxe'
+          name: 'iosxe'

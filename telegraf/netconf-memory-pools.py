@@ -51,7 +51,7 @@ def main():
                         host = config['devices'][router]['host'],  # Locally connected device. Will eventually make this a configurable item
                         port = config['devices'][router]['port'],
                         username = config['devices'][router]['credentials'][credential]['username'],
-                        password = os.getenv(config['devices'][router]['credentials'][credential]['password_env']),  # <--------- enter device password
+                        password = os.environ[config['devices'][router]['credentials'][credential]['password_env']],  # <--------- enter device password
                         hostkey_verify = bool(config['devices'][router]['hostkey_verify']),
                         device_params = config['devices'][router]['device_params']
                     ) as m:

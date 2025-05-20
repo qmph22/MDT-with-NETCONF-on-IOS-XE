@@ -6,6 +6,8 @@ services:
             dockerfile: Dockerfile-telegraf
         ports:
             - "9273:9273"
+        env_file:
+            - .env
     prometheus:
         build:
             context: .
