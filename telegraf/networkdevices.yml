@@ -2,7 +2,7 @@
 # Network devices to pull telemetry data from
 devices:
     router1:
-        host: 192.168.131.100
+        host: 192.168.131.101
         port: 830
         credentials:
             #any name can be used here

@@ -15,11 +15,10 @@ def dict_to_telegraf_json(rpc_reply_dict: Dict) -> str:
 
     for item, value in rpc_reply_dict["rpc-reply"]["data"]["cpu-usage"]["cpu-utilization"].items():
         dict = {
-            "name": "CPU",
             "time_period": item,
-            "utilization_percentage": value,
+            "percentage": float(value),
             "field": "cpu_utilization"
-        }  # trying to get rate of consumption of processes
+        }
         stats_array.append(dict)
 
     return json.dumps(stats_array)  # return JSON formatted data
