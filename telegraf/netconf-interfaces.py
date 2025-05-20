@@ -2,6 +2,10 @@ from typing import Dict
 from ncclient import manager
 import xmltodict
 import json
+from dotenv import load_dotenv
+import os
+import yaml
+import sys
 
 def dict_to_telegraf_json(rpc_reply_dict: Dict) -> str:
 
@@ -24,36 +28,55 @@ def dict_to_telegraf_json(rpc_reply_dict: Dict) -> str:
 
 
 def main():
-    with manager.connect(
-        host = "10.0.0.1",  # Locally connected device. Will eventually make this a configurable item
-        port = 830,
-        username = "admin",
-        password = "admin",  # <------- enter device password
-        hostkey_verify=False,
-        device_params = {'name': 'iosxe'}
-    ) as m:
-        # https://github.com/YangModels/yang/blob/master/vendor/cisco/xe/16111/ietf-interfaces.yang
-        netconf_filter = """
-        <filter xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-                <interfaces-state xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-                        <interface>
-                                <name/>
-                                <type/>
-                                <oper-status/>
-                                <statistics>
-                                        <in-octets/>
-                                        <in-errors/>
-                                        <out-octets/>
-                                        <out-errors/>
-                                </statistics>
-                        </interface>
-                </interfaces-state>
-        </filter>
-        """
+    
+    load_dotenv()
 
-        netconf_rpc_reply = m.get(
-            filter = netconf_filter
-        ).xml
+    with open('networkdevices.yml', 'r') as file:
+        config = yaml.safe_load(file)
+
+    # https://github.com/YangModels/yang/blob/master/vendor/cisco/xe/16111/ietf-interfaces.yang
+    netconf_filter = """
+    <filter xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+            <interfaces-state xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+                    <interface>
+                            <name/>
+                            <type/>
+                            <oper-status/>
+                            <statistics>
+                                    <in-octets/>
+                                    <in-errors/>
+                                    <out-octets/>
+                                    <out-errors/>
+                            </statistics>
+                    </interface>
+            </interfaces-state>
+    </filter>
+    """
+    routers = list(config['devices'].keys())
+    for deviceIndex in range(0, len(config['devices'])):
+        for router in routers:
+            try:
+                credentials = list(config['devices'][router]['credentials'].keys())
+                for credential in credentials:
+                    with manager.connect(
+                        host = config['devices'][router]['host'],  # Locally connected device. Will eventually make this a configurable item
+                        port = config['devices'][router]['port'],
+                        username = config['devices'][router]['credentials'][credential]['username'],
+                        password = os.getenv(config['devices'][router]['credentials'][credential]['password_env']),  # <--------- enter device password
+                        hostkey_verify = bool(config['devices'][router]['hostkey_verify']),
+                        device_params = config['devices'][router]['device_params']
+                    ) as m:
+                        netconf_rpc_reply = m.get(
+                            filter = netconf_filter
+                        ).xml
+                    break
+                
+            except Exception as e:
+                print(e)
+                if deviceIndex == len(config['devices']):
+                    print(e, file=sys.stderr)
+                else:
+                    continue
 
         netconf_reply_dict = xmltodict.parse(netconf_rpc_reply)
         

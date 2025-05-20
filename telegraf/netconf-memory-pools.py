@@ -5,6 +5,7 @@ import json
 from dotenv import load_dotenv
 import os
 import yaml
+import sys
 
 def dict_to_telegraf_json(rpc_reply_dict: Dict) -> str:
     """
@@ -39,26 +40,30 @@ def main():
                 </memory-statistic>
             </memory-statistics>
         </filter>
-        """        
-
+        """
+    routers = list(config['devices'].keys())
     for deviceIndex in range(0, len(config['devices'])):
-        for credential in config['devices'][deviceIndex]['credentials']:
+        for router in routers:
             try:
-                with manager.connect(
-                    host = config['devices'][deviceIndex]['host'],  # Locally connected device. Will eventually make this a configurable item
-                    port = config['devices'][deviceIndex]['port'],
-                    username = credential['username'],
-                    password = os.getenv(credential['password_env']),  # <--------- enter device password
-                    hostkey_verify = bool(config['devices'][deviceIndex]['hostkey_verify']),
-                    device_params = config['devices'][deviceIndex]['device_params']
-                ) as m:
-                    netconf_rpc_reply = m.get(
-                        filter = netconf_filter
-                    ).xml
-                break
-            except:
+                credentials = list(config['devices'][router]['credentials'].keys())
+                for credential in credentials:
+                    with manager.connect(
+                        host = config['devices'][router]['host'],  # Locally connected device. Will eventually make this a configurable item
+                        port = config['devices'][router]['port'],
+                        username = config['devices'][router]['credentials'][credential]['username'],
+                        password = os.getenv(config['devices'][router]['credentials'][credential]['password_env']),  # <--------- enter device password
+                        hostkey_verify = bool(config['devices'][router]['hostkey_verify']),
+                        device_params = config['devices'][router]['device_params']
+                    ) as m:
+                        netconf_rpc_reply = m.get(
+                            filter = netconf_filter
+                        ).xml
+                    break
+                
+            except Exception as e:
+                print(e)
                 if deviceIndex == len(config['devices']):
-                    exit(1)
+                    print(e, file=sys.stderr)
                 else:
                     continue
 
