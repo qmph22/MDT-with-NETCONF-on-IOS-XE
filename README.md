@@ -1,6 +1,7 @@
 # Monitoring using NETCONF
 
 The goal here is to get telemetry data with NETCONF.
+![Cellular Modem Statistics on Grafana](screenshots/dashboard_cellular-modem-statistics.png)
 ## Components:
 - NETCONF-capable Device - Used a Cisco IOS-XE device in this instance
 - Telegraf - Data Collection
