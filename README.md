@@ -36,7 +36,10 @@ docker-compose up
 - intf_stats_in_errors
 - intf_stats_out_octets
 - intf_stats_out_errors
+- intf_stats_admin_status
+- intf_stats_operational_status
 - cpu_process_consumed_bytes
+- cpu_utilization_percentage
 - memory_pool_percent_used
 - cellular_modem_radio_rsrp
 - cellular_modem_radio_rsrq
@@ -45,5 +48,5 @@ docker-compose up
 
 # To Do
 1. Update readme with how to begin developing
-2. Update list of queries in the readme
-3. Develop `input.execd` plugin for Telegraph to actually stream telemetry instead of just gathering it at a specified interval (it works but it could work better)
+2. Develop `input.execd` plugin for Telegraph to actually stream telemetry instead of just gathering it at a specified interval (it works but it could work better
+3. Update the dashboard to show the relationship between an interface's operational state and administrative state
