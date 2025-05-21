@@ -42,3 +42,8 @@ docker-compose up
 - cellular_modem_radio_rsrq
 - cellular_modem_radio_rssi
 - cellular_modem_radio_snr
+
+# To Do
+1. Update readme with how to begin developing
+2. Update list of queries in the readme
+3. Develop `input.execd` plugin for Telegraph to actually stream telemetry instead of just gathering it at a specified interval (it works but it could work better)
