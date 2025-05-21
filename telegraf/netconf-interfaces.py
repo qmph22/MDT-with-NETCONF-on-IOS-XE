@@ -15,7 +15,7 @@ def dict_to_telegraf_json(rpc_reply_dict: Dict) -> str:
         intf_name = intf_entry["name"].replace(" ", "_")
         intf_stats = {
             "admin_status": 1 if intf_entry["admin-status"]=="if-state-up" else 0,
-            "operational_status": 1 if intf_entry["oper-status"]=="if-state-up" else 0,
+            "operational_status": 1 if intf_entry["oper-status"]=="if-oper-state-ready" else 0,
             "in_octets": int(intf_entry["statistics"]["in-octets"]),
             "in_errors": int(intf_entry["statistics"]["in-errors"]),
             "out_octets": int(intf_entry["statistics"]["out-octets"]),
