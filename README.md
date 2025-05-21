@@ -16,7 +16,7 @@ Have [docker-compose](https://docs.docker.com/compose/install/) installed, along
 
 ## Running this tool
 
-1. Clone the repository with `https://github.com/qmph22/MDT-with-NETCONF-on-IOS-XE.git`
+1. Clone the repository with `git clone https://github.com/qmph22/MDT-with-NETCONF-on-IOS-XE.git`
 2. Move into the directory with `cd MDT-with-NETCONF-on-IOS-XE`
 3. Create an environmental variable in the `.env` file. Place your password in there. Create multiple environmental variables if you intend on using multiple passwords.
 4. Create specify your devices in `telegraf/networkdevices.yml`. For the password, specify the environmental variable name you created in the `.env` file.
@@ -47,7 +47,7 @@ docker-compose up
 - cellular_modem_radio_snr
 
 # Development
-1. Clone the repository with `https://github.com/qmph22/MDT-with-NETCONF-on-IOS-XE.git`
+1. Clone the repository with `git clone https://github.com/qmph22/MDT-with-NETCONF-on-IOS-XE.git`
 2. Move into the directory with `cd MDT-with-NETCONF-on-IOS-XE`
 3. Create a Python virtual environment with `python -m venv`
 4. Enter the Python virtual environment (if on Linux) with `source venv/bin/activate`
