@@ -10,11 +10,12 @@ import sys
 def dict_to_telegraf_json(rpc_reply_dict: Dict) -> str:
 
     intf_stats_array = []
-    for intf_entry in rpc_reply_dict["rpc-reply"]["data"]["interfaces-state"]["interface"]:
+    for intf_entry in rpc_reply_dict["rpc-reply"]["data"]["interfaces"]["interface"]:
         intf_stats = {}
         intf_name = intf_entry["name"].replace(" ", "_")
         intf_stats = {
-            "operational_status": 1 if intf_entry["oper-status"]=="up" else 0,
+            "admin_status": 1 if intf_entry["admin-status"]=="if-state-up" else 0,
+            "operational_status": 1 if intf_entry["oper-status"]=="if-state-up" else 0,
             "in_octets": int(intf_entry["statistics"]["in-octets"]),
             "in_errors": int(intf_entry["statistics"]["in-errors"]),
             "out_octets": int(intf_entry["statistics"]["out-octets"]),
@@ -37,19 +38,20 @@ def main():
     # https://github.com/YangModels/yang/blob/master/vendor/cisco/xe/16111/ietf-interfaces.yang
     netconf_filter = """
     <filter xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-            <interfaces-state xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-                    <interface>
-                            <name/>
-                            <type/>
-                            <oper-status/>
-                            <statistics>
-                                    <in-octets/>
-                                    <in-errors/>
-                                    <out-octets/>
-                                    <out-errors/>
-                            </statistics>
-                    </interface>
-            </interfaces-state>
+            <interfaces xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-interfaces-oper">
+                <interface>
+                <name/>
+                <interface-type/>
+                <admin-status/>
+                <oper-status/>
+                <statistics>
+                    <in-octets/>
+                    <in-errors/>
+                    <out-octets/>
+                    <out-errors/>
+                </statistics>
+                </interface>
+            </interfaces>
     </filter>
     """
     routers = list(config['devices'].keys())
