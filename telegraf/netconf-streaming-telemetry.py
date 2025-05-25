@@ -13,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 logging.getLogger().setLevel(logging.DEBUG)
 
-def xml_to_telegraf_json(notif) -> str:
+def notificationCallback(notif) -> str:
     """Callback to process telemetry notifications."""
     try:
         rpc_reply_dict = xmltodict.parse(notif.xml)
@@ -31,8 +31,7 @@ def xml_to_telegraf_json(notif) -> str:
                                 "field": "cpu_utilization"
                             }
                             stats_array.append(dict)
-
-                            print(json.dumps(stats_array))  # return JSON formatted data
+                        print(json.dumps(stats_array))  # return JSON formatted data
                         
                 case "cellwan-oper-data":
                     stats_array = []
@@ -47,8 +46,53 @@ def xml_to_telegraf_json(notif) -> str:
                                 "field": "cellular_modem"
                             }  # trying to get rate of consumption of processes
                             stats_array.append(cellularModemDict)
+                    print(json.dumps(stats_array))
 
-                            print(json.dumps(stats_array))
+                case "interfaces":
+                    stats_array = []
+                    for intf_entry in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["interfaces"]["interface"]:
+                        intf_stats = {}
+                        intf_name = intf_entry["name"].replace(" ", "_")
+                        intf_stats = {
+                            "admin_status": 1 if intf_entry["admin-status"]=="if-state-up" else 0,
+                            "operational_status": 1 if intf_entry["oper-status"]=="if-oper-state-ready" else 0,
+                            "in_octets": int(intf_entry["statistics"]["in-octets"]),
+                            "in_errors": int(intf_entry["statistics"]["in-errors"]),
+                            "out_octets": int(intf_entry["statistics"]["out-octets"]),
+                            "out_errors": int(intf_entry["statistics"]["out-errors"]),
+                            "name": intf_name,
+                            "field": "intf_stats"
+                        }
+                        stats_array.append(intf_stats)
+                    print(json.dumps(stats_array)) 
+
+                case "memory-statistics":
+                    stats_array = []
+                    for memory_entry in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["memory-statistics"]["memory-statistic"]:
+                        memory_dict = {
+                            "name": memory_entry["name"],
+                            "percent_used": ( int(memory_entry["used-memory"])/int(memory_entry["total-memory"]) ) * 100,
+                            "field": "memory_pool"
+                        } 
+                        stats_array.append(memory_dict)
+                    print(json.dumps(stats_array))
+
+                case "memory-usage-processes":
+                    stats_array = []
+                    for process_entry in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["memory-usage-processes"]["memory-usage-process"]:
+                        if int(process_entry["allocated-memory"]) > 0:
+                            process_dict = {
+                                "name": process_entry["name"].replace(" ", "_"),
+                                "process_id": int(process_entry["pid"]),
+                                "consumed_bytes": int(process_entry["holding-memory"]),
+                                "field": "cpu_process"
+                            }  # trying to get rate of consumption of processes
+                            stats_array.append(process_dict)
+                    print(json.dumps(stats_array))
+
+                case _:
+                    print(f"No matching case for {content}",file=sys.stderr)
+                    logger.error(f"No matching case for {content}",file=sys.stderr)
 
 def subscriptionCallback(notif):
     print('-->>')
@@ -88,12 +132,18 @@ def main():
                     keepalive=True
                 )
                 subs = []
-                xpaths = ["/process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds", "/cellwan-ios-xe-oper:cellwan-oper-data/cellwan-radio"]
+                xpaths = [
+                    "/process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds", 
+                    "/cellwan-ios-xe-oper:cellwan-oper-data/cellwan-radio",
+                    "/interfaces-ios-xe-oper:interfaces/interface",
+                    "/memory-ios-xe-oper:memory-statistics/memory-statistic",
+                    "/process-memory-ios-xe-oper:memory-usage-processes/memory-usage-process"
+                    ]
                 period = 1000 #centiseconds
                 #dampening_period = 100 #centiseconds, pick one or the other
                 for xpath in xpaths:
                     s = m.establish_subscription(
-                        xml_to_telegraf_json,
+                        notificationCallback,
                         subscriptionErrorCallback,
                         xpath=xpath,
                         period=period
@@ -107,7 +157,7 @@ def main():
                 logger.info(f"Subscription to {router} established.")
                 while True:
                     # print("Checking notifications")
-                    # notification = m.take_notification(block=False)
+                    # notification = m.t ake_notification(block=False)
                     # if notification:
                     #     print(etree.tostring(notification.notification_ele, pretty_print=True).decode('utf-8'))
                     # else:
