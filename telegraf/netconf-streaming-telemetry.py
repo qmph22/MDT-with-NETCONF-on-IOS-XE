@@ -13,12 +13,22 @@ import logging
 logger = logging.getLogger(__name__)
 logging.getLogger().setLevel(logging.DEBUG)
 
+subscriptions = {}
+
 def notificationCallback(notif) -> str:
     """Callback to process telemetry notifications."""
     try:
         rpc_reply_dict = xmltodict.parse(notif.xml)
     except:
         print(f"Issue with {notif}")
+    subscriptionID = notif.subscription_id
+    hostname = ''
+    try:
+        hostname = subscriptions[subscriptionID]
+    except:
+        hostname = ''
+        print('not ready')
+
     if rpc_reply_dict['notification']['push-update']:
         for content in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']:
             match content:
@@ -30,6 +40,8 @@ def notificationCallback(notif) -> str:
                                 "percentage": float(value),
                                 "field": "cpu_utilization"
                             }
+                            if hostname:
+                                dict.update({"hostname": hostname})
                             stats_array.append(dict)
                         print(json.dumps(stats_array))  # return JSON formatted data
                         
@@ -37,23 +49,24 @@ def notificationCallback(notif) -> str:
                     stats_array = []
                     for cellularModem in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["cellwan-oper-data"]["cellwan-radio"]:
                         if "online" in str(cellularModem["radio-power-mode"]):
-                            cellularModemDict = {
+                            dict = {
                                 "name": cellularModem["cellular-interface"],
                                 "radio_rssi": float(cellularModem["radio-rssi"]),
                                 "radio_rsrp": float(cellularModem["radio-rsrp"]),
                                 "radio_rsrq": float(cellularModem["radio-rsrq"]),
                                 "radio_snr": float(cellularModem["radio-snr"]),
                                 "field": "cellular_modem"
-                            }  # trying to get rate of consumption of processes
-                            stats_array.append(cellularModemDict)
+                            }
+                            if hostname:
+                                dict.update({"hostname": hostname})
+                            stats_array.append(dict)
                     print(json.dumps(stats_array))
 
                 case "interfaces":
                     stats_array = []
                     for intf_entry in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["interfaces"]["interface"]:
-                        intf_stats = {}
                         intf_name = intf_entry["name"].replace(" ", "_")
-                        intf_stats = {
+                        dict = {
                             "admin_status": 1 if intf_entry["admin-status"]=="if-state-up" else 0,
                             "operational_status": 1 if intf_entry["oper-status"]=="if-oper-state-ready" else 0,
                             "in_octets": int(intf_entry["statistics"]["in-octets"]),
@@ -63,36 +76,42 @@ def notificationCallback(notif) -> str:
                             "name": intf_name,
                             "field": "intf_stats"
                         }
-                        stats_array.append(intf_stats)
-                    print(json.dumps(stats_array)) 
+                        if hostname:
+                            dict.update({"hostname": hostname})
+                        stats_array.append(dict)
+                    print(json.dumps(stats_array))
 
                 case "memory-statistics":
                     stats_array = []
                     for memory_entry in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["memory-statistics"]["memory-statistic"]:
-                        memory_dict = {
+                        dict = {
                             "name": memory_entry["name"],
                             "percent_used": ( int(memory_entry["used-memory"])/int(memory_entry["total-memory"]) ) * 100,
                             "field": "memory_pool"
                         } 
-                        stats_array.append(memory_dict)
+                        if hostname:
+                            dict.update({"hostname": hostname})
+                        stats_array.append(dict)
                     print(json.dumps(stats_array))
 
                 case "memory-usage-processes":
                     stats_array = []
                     for process_entry in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["memory-usage-processes"]["memory-usage-process"]:
                         if int(process_entry["allocated-memory"]) > 0:
-                            process_dict = {
+                            dict = {
                                 "name": process_entry["name"].replace(" ", "_"),
                                 "process_id": int(process_entry["pid"]),
                                 "consumed_bytes": int(process_entry["holding-memory"]),
                                 "field": "cpu_process"
                             }  # trying to get rate of consumption of processes
-                            stats_array.append(process_dict)
+                            if hostname:
+                                dict.update({"hostname": hostname})
+                            stats_array.append(dict)
                     print(json.dumps(stats_array))
 
                 case _:
                     print(f"No matching case for {content}",file=sys.stderr)
-                    logger.error(f"No matching case for {content}",file=sys.stderr)
+                    logger.error(f"No matching case for {content}")
 
 def subscriptionCallback(notif):
     print('-->>')
@@ -116,6 +135,7 @@ def main():
         config = yaml.safe_load(file)
 
     routers = list(config['devices'].keys())
+
     for router in routers:
             credentials = config['devices'][router]['credentials']
             for credential in credentials.keys():
@@ -152,19 +172,19 @@ def main():
                     if s.subscription_result.endswith('ok'):
                         logger.info('Subscription Id     : %d' % s.subscription_id)
                         subs.append(s.subscription_id)
+                        subscriptions.update({s.subscription_id: router})
                 if not len(subs):
                     logger.info('No active subscriptions')
-                logger.info(f"Subscription to {router} established.")
-                while True:
-                    # print("Checking notifications")
-                    # notification = m.t ake_notification(block=False)
-                    # if notification:
-                    #     print(etree.tostring(notification.notification_ele, pretty_print=True).decode('utf-8'))
-                    # else:
-                    #     print("None")
-                    #print(f"Is connected: {m.connected}")
-                    time.sleep(5)
-            break
+                logger.info(f"Subscription(s) to {router} established.")
+    while True:
+        # print("Checking notifications")
+        # notification = m.t ake_notification(block=False)
+        # if notification:
+        #     print(etree.tostring(notification.notification_ele, pretty_print=True).decode('utf-8'))
+        # else:
+        #     print("None")
+        #print(f"Is connected: {m.connected}")
+        time.sleep(5)
 
 
 if __name__ == "__main__":
