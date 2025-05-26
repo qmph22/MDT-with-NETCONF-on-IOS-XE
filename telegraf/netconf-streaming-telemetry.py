@@ -200,7 +200,7 @@ def main():
     # Read the names of the routers from the config file
     routers = list(config['devices'].keys())
 
-    # Define xpaths that will be used to subscribe to telemetry data
+    # Define xpaths that will be used to subscribe to telemetry data. Be sure to handle each item in notificationCallback.
     xpaths = [
         "/process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds", 
         "/cellwan-ios-xe-oper:cellwan-oper-data/cellwan-radio",
@@ -222,17 +222,17 @@ def main():
     # A loop to keep the program running. The listeners from the ncclient will use the callback notificationCallback whenever there are notifications from the routers.
     # While we're using cycles, attempt to reconnect and resubscribe for any routers that have lost their connection. Will need to see if I can do this in an async manner.
     while True:
-        managers = routerManagers # Creates a COPY of routerManagers instead of just referencing it
-        for router in managers:
-            if not routerManagers[router].connected:
-                logger.warning(f"Router {router} has lost connection. Reconnecting.")
-                # routerManagers.pop(router) # Need to create another dictionary or managers since this command will throw "RuntimeError: dictionary changed size during iteration" if worked on directly
-                if connectRouter(router=router, config=config, reattempts=1):
-                    logging.info(f"Reconnected to router {router}")
-                    if subscribe(router=router, xpaths=xpaths):
-                        logging.info(f"Re-subscribed to telemetry from router {router}")
-                else:
-                    logger.warning(f"Failed to reconnect to router {router}")
+        managers = routerManagers
+        if len(managers) > 0: # Without this, the script may fail on startup.
+            for router in managers:
+                if not routerManagers[router].connected:
+                    logger.warning(f"Router {router} has lost connection. Reconnecting.")
+                    if connectRouter(router=router, config=config, reattempts=1):
+                        logging.info(f"Reconnected to router {router}")
+                        if subscribe(router=router, xpaths=xpaths):
+                            logging.info(f"Re-subscribed to telemetry from router {router}")
+                    else:
+                        logger.warning(f"Failed to reconnect to router {router}")
 
 
 if __name__ == "__main__":
