@@ -14,7 +14,8 @@ RUN mkdir /opt/monitoring/telegraf/
 COPY ./telegraf/* /opt/monitoring/telegraf/
 RUN chmod +x /opt/monitoring/telegraf/*
 
-RUN pip3 install ncclient xmltodict dotenv pyyaml typing six python-dateutil --break-system-packages
+#RUN pip3 install ncclient xmltodict dotenv pyyaml typing six python-dateutil --break-system-packages
+RUN pip3 install xmltodict dotenv pyyaml typing six python-dateutil lxml paramiko --break-system-packages
 
 WORKDIR /opt/monitoring/telegraf
 CMD ["telegraf", "--config", "/opt/monitoring/telegraf/telegraf.conf"]

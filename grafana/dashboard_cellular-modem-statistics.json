@@ -164,7 +164,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
+                "color": "dark-red",
                 "value": null
               },
               {
@@ -312,7 +312,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
+                "color": "dark-red",
                 "value": null
               },
               {
@@ -454,7 +454,7 @@
           "exemplar": false,
           "expr": "memory_pool_percent_used{name=\"Processor\"}",
           "instant": false,
-          "legendFormat": "{{host}} Memory Utilization Percentage",
+          "legendFormat": "{{hostname}} Memory Utilization Percentage",
           "range": true,
           "refId": "A"
         },
@@ -466,7 +466,7 @@
           "editorMode": "builder",
           "expr": "cpu_utilization_percentage",
           "hide": false,
-          "legendFormat": "{{host}} CPU {{time_period}} Utilization Percentage",
+          "legendFormat": "{{hostname}} CPU {{time_period}} Utilization Percentage",
           "range": true,
           "refId": "B"
         }
@@ -489,7 +489,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
+                "color": "dark-red",
                 "value": null
               },
               {
@@ -554,13 +554,13 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Cellular Modem Statistics",
   "uid": "d95e079a-79fa-4593-84cc-78bb0264e16b",
-  "version": 7,
+  "version": 10,
   "weekStart": ""
 }

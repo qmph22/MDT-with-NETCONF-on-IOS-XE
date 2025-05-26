@@ -1,33 +1,39 @@
 from typing import Dict
-from ncclient import manager
 import xmltodict
 import json
 from dotenv import load_dotenv
 import os
 import yaml
 import sys
-#from lxml import etree 
+sys.path.append('ncclient')
+from ncclient import manager
 import time
 import logging
 
 logger = logging.getLogger(__name__)
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.WARNING)
 
 subscriptions = {}
+routerManagers = {}
 
-def notificationCallback(notif) -> str:
+def notificationCallback(notif):
     """Callback to process telemetry notifications."""
     try:
+        logger.debug('Trying notificationCallback')
         rpc_reply_dict = xmltodict.parse(notif.xml)
+        logger.debug('Sucessfully parsed notification in notificationCallback')
     except:
-        print(f"Issue with {notif}")
+        logger.error(f"Issue with {notif} from callback")
+        return
     subscriptionID = notif.subscription_id
     hostname = ''
     try:
-        hostname = subscriptions[subscriptionID]
+        logger.debug('Trying to get the router associated with the subscription ID {subscriptionID}')
+        hostname = subscriptions[subscriptionID]['hostname']
+        logger.debug('Sucessfully found the router associated with the subscription ID {subscriptionID}')
     except:
         hostname = ''
-        print('not ready')
+        logger.debug('Subscription ID could not be read from the callback. It could be due to the hostname and subscription IDs not being stored in the subscriptions variable yet')
 
     if rpc_reply_dict['notification']['push-update']:
         for content in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']:
@@ -128,64 +134,117 @@ def subscriptionErrorCallback(notif):
     logging.error(notif)
     pass
 
+def connectRouter(router: str, config, reattempts=3):
+        assert reattempts > 0
+        credentials = config['devices'][router]['credentials']
+        success = False
+        for i in range(0, reattempts):
+            if success is not True:
+                for credential in credentials.keys():
+                    try:
+                        m = manager.connect(
+                            host=config['devices'][router]['host'],
+                            port=config['devices'][router]['port'],
+                            username=config['devices'][router]['credentials'][credential]['username'],
+                            password=os.environ[config['devices'][router]['credentials'][credential]['password_env']],
+                            hostkey_verify=bool(config['devices'][router]['hostkey_verify']),
+                            device_params=config['devices'][router]['device_params'],
+                            allow_agent=False,
+                            look_for_keys=False,
+                            timeout=300,
+                            keepalive=True
+                        )
+                        routerManagers.update({router: m})
+                        success = True
+                        break
+                    except:
+                        logger.warning(f"Credential {[config['devices'][router]['credentials'][credential]['password_env']]} for {router} failed on attempt {i + 1}")
+                        routerManagers.update({router: None})
+            if success:
+                return True
+            else:
+                return False
+
+def subscribe(router: str, xpaths: list[str]):
+        manager = routerManagers[router]
+        subs = []
+        period = 100 #centiseconds
+        #dampening_period = 100 #centiseconds, pick one or the other
+        for xpath in xpaths:
+            s = manager.establish_subscription(
+                notificationCallback,
+                subscriptionErrorCallback,
+                xpath=xpath,
+                period=period
+                )
+            logger.info('Subscription Result : %s' % s.subscription_result)
+            if s.subscription_result.endswith('ok'):
+                logger.info('Subscription Id     : %d' % s.subscription_id)
+                subs.append(s.subscription_id)
+                subscriptions.update({s.subscription_id: {"hostname": router, "xpath": xpath}})
+                
+                # Remove old subscriptions that have the same xpath
+                subscriptionToDelete = []
+                for subscription in subscriptions: 
+                    if subscriptions[subscription]['xpath'] == xpath and subscription != s.subscription_id:
+                        logger.debug(f"Marking subscription {subscription} for removal.")
+                        subscriptionToDelete.append(subscription)
+                        logger.debug(f"subscriptionToDelete is now {subscriptionToDelete}")
+                for oldSubscription in subscriptionToDelete:
+                    subscriptions.pop(oldSubscription)
+                    logger.debug(f"subscriptions after pop of {oldSubscription} is now {subscriptions}")
+                
+        if not len(subs):
+            logger.info('No active subscriptions')
+            return False
+        logger.info(f"Subscription(s) to {router} established.")
+        return True
+
 def main():
+    # Load environment variables from a .env file. Will need to handle this at some point since the Telegraf container also has the environmental variables
     load_dotenv()
 
+    # Open the config file
     with open('networkdevices.yml', 'r') as file:
         config = yaml.safe_load(file)
 
+    # Read the names of the routers from the config file
     routers = list(config['devices'].keys())
 
-    for router in routers:
-            credentials = config['devices'][router]['credentials']
-            for credential in credentials.keys():
-                m = manager.connect(
-                    host=config['devices'][router]['host'],
-                    port=config['devices'][router]['port'],
-                    username=config['devices'][router]['credentials'][credential]['username'],
-                    password=os.environ[config['devices'][router]['credentials'][credential]['password_env']],
-                    hostkey_verify=bool(config['devices'][router]['hostkey_verify']),
-                    device_params=config['devices'][router]['device_params'],
-                    allow_agent=False,
-                    look_for_keys=False,
-                    timeout=300,
-                    keepalive=True
-                )
-                subs = []
-                xpaths = [
-                    "/process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds", 
-                    "/cellwan-ios-xe-oper:cellwan-oper-data/cellwan-radio",
-                    "/interfaces-ios-xe-oper:interfaces/interface",
-                    "/memory-ios-xe-oper:memory-statistics/memory-statistic",
-                    "/process-memory-ios-xe-oper:memory-usage-processes/memory-usage-process"
-                    ]
-                period = 100 #centiseconds
-                #dampening_period = 100 #centiseconds, pick one or the other
-                for xpath in xpaths:
-                    s = m.establish_subscription(
-                        notificationCallback,
-                        subscriptionErrorCallback,
-                        xpath=xpath,
-                        period=period
-                        )
-                    logger.info('Subscription Result : %s' % s.subscription_result)
-                    if s.subscription_result.endswith('ok'):
-                        logger.info('Subscription Id     : %d' % s.subscription_id)
-                        subs.append(s.subscription_id)
-                        subscriptions.update({s.subscription_id: router})
-                if not len(subs):
-                    logger.info('No active subscriptions')
-                logger.info(f"Subscription(s) to {router} established.")
-    while True:
-        # print("Checking notifications")
-        # notification = m.t ake_notification(block=False)
-        # if notification:
-        #     print(etree.tostring(notification.notification_ele, pretty_print=True).decode('utf-8'))
-        # else:
-        #     print("None")
-        #print(f"Is connected: {m.connected}")
-        time.sleep(5)
+    # Define xpaths that will be used to subscribe to telemetry data. Be sure to handle each item in notificationCallback.
+    xpaths = [
+        "/process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds", 
+        "/cellwan-ios-xe-oper:cellwan-oper-data/cellwan-radio",
+        "/interfaces-ios-xe-oper:interfaces/interface",
+        "/memory-ios-xe-oper:memory-statistics/memory-statistic",
+        "/process-memory-ios-xe-oper:memory-usage-processes/memory-usage-process"
+        ]
 
+    # Attempt to connect to every router. Upon a successful connection, subscribe to the telemetry data
+    for router in routers:
+        if connectRouter(router=router, config=config):
+            if subscribe(router=router, xpaths=xpaths):
+                logging.info(f"Subscribed to telemetry from router {router}")
+            else:
+                logging.warning(f"Unable to subscribe to telemetry from router {router} on the first attempt")
+        else:
+            logging.warning(f"Unable to connect to {router} on the first attempt")
+
+    # A loop to keep the program running. The listeners from the ncclient will use the callback notificationCallback whenever there are notifications from the routers.
+    # While we're using cycles, attempt to reconnect and resubscribe for any routers that have lost their connection. Will need to see if I can do this in an async manner.
+    while True:
+        managers = routerManagers
+        if len(managers) > 0: # Without this, the script may fail on startup.
+            for router in managers:
+                if not routerManagers[router].connected:
+                    logger.warning(f"Router {router} has lost connection. Reconnecting.")
+                    if connectRouter(router=router, config=config, reattempts=1):
+                        logging.info(f"Reconnected to router {router}")
+                        if subscribe(router=router, xpaths=xpaths):
+                            logging.info(f"Re-subscribed to telemetry from router {router}")
+                    else:
+                        logger.warning(f"Failed to reconnect to router {router}")
+        time.sleep(.25) # If this is not present, the CPU utilization can go to 100%
 
 if __name__ == "__main__":
     main()
