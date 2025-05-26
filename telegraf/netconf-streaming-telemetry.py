@@ -237,7 +237,7 @@ def main():
         if len(managers) > 0: # Without this, the script may fail on startup.
             for router in managers:
                 if not routerManagers[router].connected:
-                    logger.warning(f"Router {router} has lost connection. Reconnecting.")
+                    logger.warning(f"Router {router} has lost connection while streaming. Reconnecting.")
                     if connectRouter(router=router, config=config, reattempts=1):
                         logging.info(f"Reconnected to router {router}")
                         if subscribe(router=router, xpaths=xpaths):
