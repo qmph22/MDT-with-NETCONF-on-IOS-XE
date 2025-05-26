@@ -29,9 +29,14 @@ Have [docker-compose](https://docs.docker.com/compose/install/) installed, along
 docker-compose build
 docker-compose up
 ```
-9. View metrics collected by Telegraf at http://localhost:9273/metrics
-10. View metrics being stored by Prometheus at http://localhost:9090/
-11. View the dashboards in Grafana at http://localhost:3000/
+or 
+```bash
+docker compose up --build
+```
+9. Manually connect add Prometheus as a data source in Grafana until a script is made to automate it.
+10. View metrics collected by Telegraf at http://localhost:9273/metrics
+11. View metrics being stored by Prometheus at http://localhost:9090/
+12. View the dashboards in Grafana at http://localhost:3000/
 
 ## PromQL queries supported
 
@@ -69,6 +74,7 @@ or
 ```bash
 docker compose up --build
 ```
+9. Manually connect add Prometheus as a data source in Grafana until a script is made to automate it.
 
 ## Tips
 - Streaming telemetry is preferred but if you want to use a series of NETCONF get RPCs, the Python files are in the `telegraf/rpc_get` directory. Then, modify the `telegraf/telegraf.conf` file to use the `inputs.exec` plugin.
