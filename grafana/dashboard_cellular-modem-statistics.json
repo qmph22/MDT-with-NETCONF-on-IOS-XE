@@ -164,7 +164,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
+                "color": "dark-red",
                 "value": null
               },
               {
@@ -312,7 +312,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
+                "color": "dark-red",
                 "value": null
               },
               {
@@ -489,7 +489,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
+                "color": "dark-red",
                 "value": null
               },
               {
@@ -561,6 +561,6 @@
   "timezone": "",
   "title": "Cellular Modem Statistics",
   "uid": "d95e079a-79fa-4593-84cc-78bb0264e16b",
-  "version": 7,
+  "version": 9,
   "weekStart": ""
 }
