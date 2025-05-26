@@ -1,5 +1,4 @@
 FROM ubuntu:24.04
-#SHELL ["/bin/bash", "-c"]
 RUN apt-get update && apt-get install -y && \
     apt-get install vim -y
 RUN apt-get install wget -y
@@ -15,8 +14,6 @@ RUN mkdir /opt/monitoring/telegraf/
 COPY ./telegraf/* /opt/monitoring/telegraf/
 RUN chmod +x /opt/monitoring/telegraf/*
 
-#RUN python3 -m venv venv
-#RUN source venv/bin/activate
 RUN pip3 install ncclient xmltodict dotenv pyyaml typing six python-dateutil --break-system-packages
 
 WORKDIR /opt/monitoring/telegraf
