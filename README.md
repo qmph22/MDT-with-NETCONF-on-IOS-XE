@@ -54,7 +54,8 @@ docker-compose up
 3. Create a Python virtual environment with `python -m venv` (ensure you are using Python 3.10 or higher)
 4. Enter the Python virtual environment (if on Linux) with `source venv/bin/activate`
 5. Install the required packages with `pip3 install ncclient xmltodict dotenv pyyaml typing`
-6. Create an environmental variable in the `.env` file. You can clone the `.env.example` file with `cp .env.example .env` to get started. Place your passwords in there. Create multiple environmental variables if you intend on using multiple passwords.
+6. Create an environmental variable in the `.env` file. Place your passwords in there noting the name of the environmental variable per password. Create multiple environmental variables if you intend on using multiple passwords.
+   - You can clone the `.env.example` file with `cp .env.example .env` to get started.
 7. Create specify your devices in `telegraf/networkdevices.yml`. For the password, specify the environmental variable name you created in the `.env` file.
    - You can copy `networkdevices.example.yml` to `networkdevices.yml` with `cp telegraf/networkdevices.example.yml telegraf/networkdevices.yml` to help you get started. 
 8. When ready to test the Docker stack, run the following:
