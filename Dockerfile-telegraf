@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 RUN apt-get update && apt-get install -y && \
     apt-get install vim -y
 RUN apt-get install wget -y
@@ -14,7 +14,7 @@ RUN mkdir /opt/monitoring/telegraf/
 COPY ./telegraf/* /opt/monitoring/telegraf/
 RUN chmod +x /opt/monitoring/telegraf/*
 
-RUN pip3 install ncclient xmltodict dotenv pyyaml typing
+RUN pip3 install ncclient xmltodict dotenv pyyaml typing six python-dateutil --break-system-packages
 
 WORKDIR /opt/monitoring/telegraf
 CMD ["telegraf", "--config", "/opt/monitoring/telegraf/telegraf.conf"]

@@ -464,7 +464,7 @@
             "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
           },
           "editorMode": "builder",
-          "expr": "cpu_utilization_percentage{host=\"ios-xe.device\"}",
+          "expr": "cpu_utilization_percentage",
           "hide": false,
           "legendFormat": "{{host}} CPU {{time_period}} Utilization Percentage",
           "range": true,
@@ -546,7 +546,7 @@
       "type": "gauge"
     }
   ],
-  "refresh": "",
+  "refresh": "5s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -561,6 +561,6 @@
   "timezone": "",
   "title": "Cellular Modem Statistics",
   "uid": "d95e079a-79fa-4593-84cc-78bb0264e16b",
-  "version": 6,
+  "version": 7,
   "weekStart": ""
 }

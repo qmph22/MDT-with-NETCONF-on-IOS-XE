@@ -1,6 +1,6 @@
 # Monitoring using NETCONF
 
-The goal here is to get telemetry data with NETCONF.
+The goal is to get telemetry data with NETCONF whether its a series of get RPCs or streaming.
 ![Cellular Modem Statistics on Grafana](screenshots/dashboard_cellular-modem-statistics.png)
 ## Components:
 - NETCONF-capable Device - Used a Cisco IOS-XE device in this instance
@@ -17,18 +17,20 @@ Have [docker-compose](https://docs.docker.com/compose/install/) installed, along
 ## Running this tool
 
 1. Clone the repository with `git clone https://github.com/qmph22/MDT-with-NETCONF-on-IOS-XE.git`
-2. Move into the directory with `cd MDT-with-NETCONF-on-IOS-XE`
-3. Create an environmental variable in the `.env` file. Place your password in there. Create multiple environmental variables if you intend on using multiple passwords.
-4. Create specify your devices in `telegraf/networkdevices.yml`. For the password, specify the environmental variable name you created in the `.env` file.
+2. Move into the telegraf directory with `cd MDT-with-NETCONF-on-IOS-XE/telegraf`
+3. Clone the Python ncclient library from Cisco DevNet with `clone https://github.com/CiscoDevNet/ncclient.git` since `ncclient` from pip does not contain the `establish-subscription` functionality at this time.
+4. Go to the top level directory of the project with `cd ..`
+5. Create an environmental variable in the `.env` file. Place your password in there. Create multiple environmental variables if you intend on using multiple passwords.
+6. Create specify your devices in `telegraf/networkdevices.yml`. For the password, specify the environmental variable name you created in the `.env` file.
    - You can copy `networkdevices.example.yml` to `networkdevices.yml` with `cp telegraf/networkdevices.example.yml telegraf/networkdevices.yml` to help you get started.
-5. Run the following:
+7. Run the following:
 ```bash
 docker-compose build
 docker-compose up
 ```
-6. View metrics collected by Telegraf at http://localhost:9273/metrics
-7. View metrics being stored by Prometheus at http://localhost:9090/
-8. View the dashboards in Grafana at http://localhost:3000/
+8. View metrics collected by Telegraf at http://localhost:9273/metrics
+9. View metrics being stored by Prometheus at http://localhost:9090/
+10. View the dashboards in Grafana at http://localhost:3000/
 
 ## PromQL queries supported
 
@@ -49,7 +51,7 @@ docker-compose up
 # Development
 1. Clone the repository with `git clone https://github.com/qmph22/MDT-with-NETCONF-on-IOS-XE.git`
 2. Move into the directory with `cd MDT-with-NETCONF-on-IOS-XE`
-3. Create a Python virtual environment with `python -m venv`
+3. Create a Python virtual environment with `python -m venv` (ensure you are using Python 3.10 or higher)
 4. Enter the Python virtual environment (if on Linux) with `source venv/bin/activate`
 5. Install the required packages with `pip3 install ncclient xmltodict dotenv pyyaml typing`
 6. Create an environmental variable in the `.env` file. Place your password in there. Create multiple environmental variables if you intend on using multiple passwords.
@@ -66,10 +68,10 @@ docker compose up --build
 ```
 
 ## Tips
+- Streaming telemetry is preferred but if you want to use a series of NETCONF get RPCs, the Python files are in the `telegraf/rpc_get` directory. Then, modify the `telegraf/telegraf.conf` file to use the `inputs.exec` plugin.
 - Always be in the `telegraf` directory if executing the Python scripts from CLI. For example, first `cd telegraf` then `python3 netconf-cellular.py`.
 - Always be in the top-level directory of `MDT-with-NETCONF-on-IOS-XE` before running any `docker compose` commands.
 - If making changes other than just the readme, do them in a different branch of this project.
 
 # To Do
-1. Develop `input.execd` plugin for Telegraph to actually stream telemetry instead of just gathering it at a specified interval (it works but it could work better
-2. Update the dashboard to show the relationship between an interface's operational state and administrative state
+1. Update the dashboard to show the relationship between an interface's operational state and administrative state
