@@ -159,7 +159,7 @@ def main():
                     "/memory-ios-xe-oper:memory-statistics/memory-statistic",
                     "/process-memory-ios-xe-oper:memory-usage-processes/memory-usage-process"
                     ]
-                period = 1000 #centiseconds
+                period = 100 #centiseconds
                 #dampening_period = 100 #centiseconds, pick one or the other
                 for xpath in xpaths:
                     s = m.establish_subscription(
