@@ -1,17 +1,18 @@
 from typing import Dict
-from ncclient import manager
 import xmltodict
 import json
 from dotenv import load_dotenv
 import os
 import yaml
 import sys
+sys.path.append('ncclient')
+from ncclient import manager
 #from lxml import etree 
 import time
 import logging
 
 logger = logging.getLogger(__name__)
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.WARNING)
 
 subscriptions = {}
 routerManagers = {}
@@ -19,14 +20,18 @@ routerManagers = {}
 def notificationCallback(notif):
     """Callback to process telemetry notifications."""
     try:
+        logger.debug('Trying notificationCallback')
         rpc_reply_dict = xmltodict.parse(notif.xml)
+        logger.debug('Sucessfully parsed notification in notificationCallback')
     except:
         logger.error(f"Issue with {notif} from callback")
         return
     subscriptionID = notif.subscription_id
     hostname = ''
     try:
+        logger.debug('Trying to get the router associated with the subscription ID {subscriptionID}')
         hostname = subscriptions[subscriptionID]
+        logger.debug('Sucessfully found the router associated with the subscription ID {subscriptionID}')
     except:
         hostname = ''
         logger.debug('Subscription ID could not be read from the callback. It could be due to the hostname and subscription IDs not being stored in the subscriptions variable yet')
@@ -134,7 +139,7 @@ def connectRouter(router: str, config, reattempts=3):
         assert reattempts > 0
         credentials = config['devices'][router]['credentials']
         success = False
-        for i in range(1, reattempts):
+        for i in range(0, reattempts):
             if success is not True:
                 for credential in credentials.keys():
                     try:
@@ -154,12 +159,12 @@ def connectRouter(router: str, config, reattempts=3):
                         success = True
                         break
                     except:
-                        logger.warning(f"Credential {[config['devices'][router]['credentials'][credential]['password_env']]} for {router} failed on attempt {i}")
+                        logger.warning(f"Credential {[config['devices'][router]['credentials'][credential]['password_env']]} for {router} failed on attempt {i + 1}")
                         routerManagers.update({router: None})
-        if success:
-            return True
-        else:
-            return False
+            if success:
+                return True
+            else:
+                return False
 
 def subscribe(router: str, xpaths: list[str]):
         manager = routerManagers[router]
@@ -212,19 +217,22 @@ def main():
             else:
                 logging.warning(f"Unable to subscribe to telemetry from router {router} on the first attempt")
         else:
-            logging.error(f"Unable to connect to {router} on the first attempt")
+            logging.warning(f"Unable to connect to {router} on the first attempt")
 
     # A loop to keep the program running. The listeners from the ncclient will use the callback notificationCallback whenever there are notifications from the routers.
     # While we're using cycles, attempt to reconnect and resubscribe for any routers that have lost their connection. Will need to see if I can do this in an async manner.
     while True:
-        for router in routerManagers:
+        managers = routerManagers # Creates a COPY of routerManagers instead of just referencing it
+        for router in managers:
             if not routerManagers[router].connected:
-                logger.error(f"Router {router} has lost connection. Reconnecting.")
-                routerManagers.pop(router)
+                logger.warning(f"Router {router} has lost connection. Reconnecting.")
+                # routerManagers.pop(router) # Need to create another dictionary or managers since this command will throw "RuntimeError: dictionary changed size during iteration" if worked on directly
                 if connectRouter(router=router, config=config, reattempts=1):
                     logging.info(f"Reconnected to router {router}")
                     if subscribe(router=router, xpaths=xpaths):
                         logging.info(f"Re-subscribed to telemetry from router {router}")
+                else:
+                    logger.warning(f"Failed to reconnect to router {router}")
 
 
 if __name__ == "__main__":
