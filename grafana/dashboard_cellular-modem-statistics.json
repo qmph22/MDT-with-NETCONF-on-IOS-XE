@@ -80,9 +80,269 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 6,
         "x": 0,
         "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "memory_pool_percent_used{name=\"Processor\"}",
+          "instant": false,
+          "legendFormat": "{{hostname}} Memory Utilization Percentage",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+          },
+          "editorMode": "builder",
+          "expr": "cpu_utilization_percentage",
+          "hide": false,
+          "legendFormat": "{{hostname}} CPU {{time_period}} Utilization Percentage",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Device Resource Utilization",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-RdYlGr"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 0,
+            "spanNulls": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "Not Connected"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "Connected"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "alignValue": "left",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.5.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+          },
+          "editorMode": "builder",
+          "expr": "system_vmanage_is_connected",
+          "legendFormat": "{{hostname}} - vManage Connection",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Panel Title",
+      "type": "state-timeline"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": -18
+              },
+              {
+                "color": "#EAB839",
+                "value": -15
+              },
+              {
+                "color": "dark-green",
+                "value": -12
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.5.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+          },
+          "editorMode": "builder",
+          "expr": "cellular_modem_radio_rsrq{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
+          "legendFormat": "{{name}} RSRQ",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Cellular Modem Statistics - RSRQ",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
       },
       "id": 1,
       "options": {
@@ -169,154 +429,6 @@
               },
               {
                 "color": "dark-red",
-                "value": -18
-              },
-              {
-                "color": "#EAB839",
-                "value": -15
-              },
-              {
-                "color": "dark-green",
-                "value": -12
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
-      "id": 5,
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "9.5.6",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
-          "editorMode": "builder",
-          "expr": "cellular_modem_radio_rsrq{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
-          "legendFormat": "{{name}} RSRQ",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Cellular Modem Statistics - RSRQ",
-      "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "fillOpacity": 70,
-            "lineWidth": 0,
-            "spanNulls": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "dark-red",
-                "value": 0
-              },
-              {
-                "color": "dark-green",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "bool_on_off"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 8
-      },
-      "id": 7,
-      "options": {
-        "alignValue": "left",
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "mergeValues": true,
-        "rowHeight": 0.9,
-        "showValue": "auto",
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "9.5.6",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
-          "editorMode": "builder",
-          "expr": "intf_stats_operational_status",
-          "hide": false,
-          "legendFormat": "{{name}} Oper-Status",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Interface States",
-      "type": "state-timeline"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-red",
-                "value": null
-              },
-              {
-                "color": "dark-red",
                 "value": -90
               },
               {
@@ -376,37 +488,12 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "fillOpacity": 70,
+            "lineWidth": 0,
+            "spanNulls": false
           },
           "mappings": [],
           "thresholds": {
@@ -417,11 +504,16 @@
                 "value": null
               },
               {
-                "color": "red",
-                "value": 80
+                "color": "dark-red",
+                "value": 0
+              },
+              {
+                "color": "dark-green",
+                "value": 1
               }
             ]
-          }
+          },
+          "unit": "bool_on_off"
         },
         "overrides": []
       },
@@ -431,19 +523,23 @@
         "x": 0,
         "y": 16
       },
-      "id": 2,
+      "id": 7,
       "options": {
+        "alignValue": "left",
         "legend": {
-          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "showValue": "auto",
         "tooltip": {
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "9.5.6",
       "targets": [
         {
           "datasource": {
@@ -451,28 +547,15 @@
             "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
           },
           "editorMode": "builder",
-          "exemplar": false,
-          "expr": "memory_pool_percent_used{name=\"Processor\"}",
-          "instant": false,
-          "legendFormat": "{{hostname}} Memory Utilization Percentage",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
-          "editorMode": "builder",
-          "expr": "cpu_utilization_percentage",
+          "expr": "intf_stats_operational_status",
           "hide": false,
-          "legendFormat": "{{hostname}} CPU {{time_period}} Utilization Percentage",
+          "legendFormat": "{{name}} Oper-Status",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "Device Resource Utilization",
-      "type": "timeseries"
+      "title": "Interface States",
+      "type": "state-timeline"
     },
     {
       "datasource": {
@@ -554,13 +637,13 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Cellular Modem Statistics",
   "uid": "d95e079a-79fa-4593-84cc-78bb0264e16b",
-  "version": 10,
+  "version": 11,
   "weekStart": ""
 }
