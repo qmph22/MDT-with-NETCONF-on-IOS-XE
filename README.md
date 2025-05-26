@@ -20,17 +20,18 @@ Have [docker-compose](https://docs.docker.com/compose/install/) installed, along
 2. Move into the telegraf directory with `cd MDT-with-NETCONF-on-IOS-XE/telegraf`
 3. Clone the Python ncclient library from Cisco DevNet with `clone https://github.com/CiscoDevNet/ncclient.git` since `ncclient` from pip does not contain the `establish-subscription` functionality at this time.
 4. Go to the top level directory of the project with `cd ..`
-5. Create an environmental variable in the `.env` file. Place your password in there. Create multiple environmental variables if you intend on using multiple passwords.
-6. Create specify your devices in `telegraf/networkdevices.yml`. For the password, specify the environmental variable name you created in the `.env` file.
+6. Create an environmental variable in the `.env` file. Place your passwords in there noting the name of the environmental variable per password. Create multiple environmental variables if you intend on using multiple passwords.
+   - You can clone the `.env.example` file with `cp .env.example .env` to get started.
+7. Specify your devices in `telegraf/networkdevices.yml`. For the password, specify the environmental variable name you created in the `.env` file.
    - You can copy `networkdevices.example.yml` to `networkdevices.yml` with `cp telegraf/networkdevices.example.yml telegraf/networkdevices.yml` to help you get started.
-7. Run the following:
+8. Run the following:
 ```bash
 docker-compose build
 docker-compose up
 ```
-8. View metrics collected by Telegraf at http://localhost:9273/metrics
-9. View metrics being stored by Prometheus at http://localhost:9090/
-10. View the dashboards in Grafana at http://localhost:3000/
+9. View metrics collected by Telegraf at http://localhost:9273/metrics
+10. View metrics being stored by Prometheus at http://localhost:9090/
+11. View the dashboards in Grafana at http://localhost:3000/
 
 ## PromQL queries supported
 
@@ -51,12 +52,13 @@ docker-compose up
 # Development
 1. Clone the repository with `git clone https://github.com/qmph22/MDT-with-NETCONF-on-IOS-XE.git`
 2. Move into the directory with `cd MDT-with-NETCONF-on-IOS-XE`
+3. Clone the ncclient from the DevNet repository with `git clone https://github.com/CiscoDevNet/ncclient`
 3. Create a Python virtual environment with `python -m venv` (ensure you are using Python 3.10 or higher)
 4. Enter the Python virtual environment (if on Linux) with `source venv/bin/activate`
-5. Install the required packages with `pip3 install ncclient xmltodict dotenv pyyaml typing`
+5. Install the required packages with `pip3 install xmltodict dotenv pyyaml typing six python-dateutil lxml paramiko`
 6. Create an environmental variable in the `.env` file. Place your passwords in there noting the name of the environmental variable per password. Create multiple environmental variables if you intend on using multiple passwords.
    - You can clone the `.env.example` file with `cp .env.example .env` to get started.
-7. Create specify your devices in `telegraf/networkdevices.yml`. For the password, specify the environmental variable name you created in the `.env` file.
+7. Specify your devices in `telegraf/networkdevices.yml`. For the password, specify the environmental variable name you created in the `.env` file.
    - You can copy `networkdevices.example.yml` to `networkdevices.yml` with `cp telegraf/networkdevices.example.yml telegraf/networkdevices.yml` to help you get started. 
 8. When ready to test the Docker stack, run the following:
 ```bash
