@@ -3,6 +3,7 @@ RUN apt-get update && apt-get install -y && \
     apt-get install vim -y
 RUN apt-get install wget -y
 RUN apt-get install -y python3 python3-pip
+RUN apt-get install -y git
 RUN mkdir /opt/monitoring/
 
 # install telegraf
@@ -10,11 +11,14 @@ RUN wget https://dl.influxdata.com/telegraf/releases/telegraf_1.19.0-1_amd64.deb
 RUN dpkg -i telegraf_1.19.0-1_amd64.deb
 RUN mkdir /opt/monitoring/telegraf/
 
+# Clone ncclient fork from GitHub from CiscoDevNet
+RUN git clone https://github.com/CiscoDevNet/ncclient /opt/monitoring/telegraf/ncclient
+
 # copy NETCONF scripts/files and telegraf config file into the telegraf monitoring folder
 COPY ./telegraf/* /opt/monitoring/telegraf/
 RUN chmod +x /opt/monitoring/telegraf/*
 
-#RUN pip3 install ncclient xmltodict dotenv pyyaml typing six python-dateutil --break-system-packages
+# Install required packages for Python scripts
 RUN pip3 install xmltodict dotenv pyyaml typing six python-dateutil lxml paramiko --break-system-packages
 
 WORKDIR /opt/monitoring/telegraf
