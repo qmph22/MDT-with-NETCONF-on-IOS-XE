@@ -18,6 +18,7 @@ RUN git clone https://github.com/CiscoDevNet/ncclient /opt/monitoring/telegraf/n
 COPY ./telegraf/* /opt/monitoring/telegraf/
 RUN chmod +x /opt/monitoring/telegraf/*
 
+# Install required packages for Python scripts
 RUN pip3 install xmltodict dotenv pyyaml typing six python-dateutil lxml paramiko --break-system-packages
 
 WORKDIR /opt/monitoring/telegraf
