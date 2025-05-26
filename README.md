@@ -75,3 +75,4 @@ docker compose up --build
 
 # To Do
 1. Update the dashboard to show the relationship between an interface's operational state and administrative state
+2. Handle session disconnects by cleaning up the `subscriptions` dictionary then restarting the sections.
