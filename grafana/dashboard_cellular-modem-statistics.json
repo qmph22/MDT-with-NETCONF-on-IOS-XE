@@ -202,12 +202,12 @@
           },
           "editorMode": "builder",
           "expr": "system_vmanage_is_connected",
-          "legendFormat": "{{hostname}} - vManage Connection",
+          "legendFormat": "{{hostname}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Panel Title",
+      "title": "Is Connected to vManage",
       "type": "state-timeline"
     },
     {
@@ -488,28 +488,36 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-GrYlRd"
           },
           "custom": {
             "fillOpacity": 70,
             "lineWidth": 0,
             "spanNulls": false
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "Down"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "Up"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "dark-red",
-                "value": 0
-              },
-              {
-                "color": "dark-green",
-                "value": 1
               }
             ]
           },
@@ -549,12 +557,12 @@
           "editorMode": "builder",
           "expr": "intf_stats_operational_status",
           "hide": false,
-          "legendFormat": "{{name}} Oper-Status",
+          "legendFormat": "{{hostname}} - {{name}}",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "Interface States",
+      "title": "Interface Operational Status",
       "type": "state-timeline"
     },
     {
