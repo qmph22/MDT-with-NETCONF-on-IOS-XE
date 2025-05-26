@@ -21,7 +21,7 @@ def dict_to_telegraf_json(rpc_reply_dict: Dict, hostname: str) -> str:
 
     stats_array = []
     dict = {
-        "vmanage-is-connnected": 1 if rpc_reply_dict["rpc-reply"]["data"]["system"]["vmanage-is-connected"]=="true" else 0,
+        "vmanage-is-connected": 1 if rpc_reply_dict["rpc-reply"]["data"]["system"]["vmanage-is-connected"]=="true" else 0,
         "field": "system"
     }  # trying to get rate of consumption of processes
     if hostname:
