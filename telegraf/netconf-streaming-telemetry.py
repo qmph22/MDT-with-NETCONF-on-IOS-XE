@@ -29,7 +29,7 @@ def notificationCallback(notif):
     hostname = ''
     try:
         logger.debug('Trying to get the router associated with the subscription ID {subscriptionID}')
-        hostname = subscriptions[subscriptionID]
+        hostname = subscriptions[subscriptionID]['hostname']
         logger.debug('Sucessfully found the router associated with the subscription ID {subscriptionID}')
     except:
         hostname = ''
@@ -181,7 +181,19 @@ def subscribe(router: str, xpaths: list[str]):
             if s.subscription_result.endswith('ok'):
                 logger.info('Subscription Id     : %d' % s.subscription_id)
                 subs.append(s.subscription_id)
-                subscriptions.update({s.subscription_id: router})
+                subscriptions.update({s.subscription_id: {"hostname": router, "xpath": xpath}})
+                
+                # Remove old subscriptions that have the same xpath
+                subscriptionToDelete = []
+                for subscription in subscriptions: 
+                    if subscriptions[subscription]['xpath'] == xpath and subscription != s.subscription_id:
+                        logger.debug(f"Marking subscription {subscription} for removal.")
+                        subscriptionToDelete.append(subscription)
+                        logger.debug(f"subscriptionToDelete is now {subscriptionToDelete}")
+                for oldSubscription in subscriptionToDelete:
+                    subscriptions.pop(oldSubscription)
+                    logger.debug(f"subscriptions after pop of {oldSubscription} is now {subscriptions}")
+                
         if not len(subs):
             logger.info('No active subscriptions')
             return False
