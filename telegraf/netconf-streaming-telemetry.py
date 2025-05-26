@@ -185,13 +185,17 @@ def subscribe(router: str, xpaths: list[str]):
         return True
 
 def main():
+    # Load environment variables from a .env file. Will need to handle this at some point since the Telegraf container also has the environmental variables
     load_dotenv()
 
+    # Open the config file
     with open('networkdevices.yml', 'r') as file:
         config = yaml.safe_load(file)
 
+    # Read the names of the routers from the config file
     routers = list(config['devices'].keys())
 
+    # Define xpaths that will be used to subscribe to telemetry data
     xpaths = [
         "/process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds", 
         "/cellwan-ios-xe-oper:cellwan-oper-data/cellwan-radio",
@@ -200,6 +204,7 @@ def main():
         "/process-memory-ios-xe-oper:memory-usage-processes/memory-usage-process"
         ]
 
+    # Attempt to connect to every router. Upon a successful connection, subscribe to the telemetry data
     for router in routers:
         if connectRouter(router=router, config=config):
             if subscribe(router=router, xpaths=xpaths):
@@ -209,10 +214,13 @@ def main():
         else:
             logging.error(f"Unable to connect to {router} on the first attempt")
 
+    # A loop to keep the program running. The listeners from the ncclient will use the callback notificationCallback whenever there are notifications from the routers.
+    # While we're using cycles, attempt to reconnect and resubscribe for any routers that have lost their connection. Will need to see if I can do this in an async manner.
     while True:
         for router in routerManagers:
             if not routerManagers[router].connected:
                 logger.error(f"Router {router} has lost connection. Reconnecting.")
+                routerManagers.pop(router)
                 if connectRouter(router=router, config=config, reattempts=1):
                     logging.info(f"Reconnected to router {router}")
                     if subscribe(router=router, xpaths=xpaths):
