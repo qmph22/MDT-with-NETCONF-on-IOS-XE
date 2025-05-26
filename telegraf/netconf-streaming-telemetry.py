@@ -7,7 +7,6 @@ import yaml
 import sys
 sys.path.append('ncclient')
 from ncclient import manager
-#from lxml import etree 
 import time
 import logging
 
@@ -233,7 +232,7 @@ def main():
                             logging.info(f"Re-subscribed to telemetry from router {router}")
                     else:
                         logger.warning(f"Failed to reconnect to router {router}")
-
+        time.sleep(.25) # If this is not present, the CPU utilization can go to 100%
 
 if __name__ == "__main__":
     main()
