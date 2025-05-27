@@ -4,6 +4,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile-telegraf
+        container_name: ${CONTAINER_PREFIX}_telegraf
         ports:
             - "9273:9273"
         env_file:
@@ -12,6 +13,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile-prometheus
+        container_name: ${CONTAINER_PREFIX}_prometheus
         ports:
             - "9090:9090"
         depends_on:

@@ -36,79 +36,79 @@ exec gosu grafana /usr/share/grafana/bin/grafana-server  \
 
 sleep 5
 
-###############################################################
-# Creating Default Data Source
+# ###############################################################
+# # Creating Default Data Source
 
-# Set new Data Source name
-PROMETHEUS_DATA_SOURCE="Prometheus"
+# # Set new Data Source name
+# PROMETHEUS_DATA_SOURCE="Prometheus"
 
-# INFLUXDB_DATA_SOURCE="Docker InfluxDB"
-# INFLUXDB_DATA_SOURCE_WEB=`echo ${INFLUXDB_DATA_SOURCE} | sed 's/ /%20/g'`
+# # INFLUXDB_DATA_SOURCE="Docker InfluxDB"
+# # INFLUXDB_DATA_SOURCE_WEB=`echo ${INFLUXDB_DATA_SOURCE} | sed 's/ /%20/g'`
 
-# Set information about grafana host
-GRAFANA_URL=`hostname -i`
+# # Set information about grafana host
+# GRAFANA_URL=`hostname -i`
 
-# Check $PROMETHEUS_DATA_SOURCE status
-# Check $INFLUXDB_DATA_SOURCE status
-PROMETHEUS_DATA_SOURCE_STATUS=`curl -s -L -i \
- -H "Accept: application/json" \
- -H "Content-Type: application/json" \
- -X GET http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${PROMETHEUS_DATA_SOURCE} | head -1 | awk '{print $2}'`
-
+# # Check $PROMETHEUS_DATA_SOURCE status
 # # Check $INFLUXDB_DATA_SOURCE status
-# INFLUXDB_DATA_SOURCE_STATUS=`curl -s -L -i \
+# PROMETHEUS_DATA_SOURCE_STATUS=`curl -s -L -i \
 #  -H "Accept: application/json" \
 #  -H "Content-Type: application/json" \
-#  -X GET http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${INFLUXDB_DATA_SOURCE_WEB} | head -1 | awk '{print $2}'`
+#  -X GET http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${PROMETHEUS_DATA_SOURCE} | head -1 | awk '{print $2}'`
 
-#Debug Time!
-curl -s -L -i \
- -H "Accept: application/json" \
- -H "Content-Type: application/json" \
- -X GET http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${PROMETHEUS_DATA_SOURCE} >>$GF_PATHS_LOGS/grafana.log 2>>$GF_PATHS_LOGS/grafana.log 
-echo "http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${PROMETHEUS_DATA_SOURCE}" >> $GF_PATHS_LOGS/grafana.log
-echo "INFLUXDB_DATA_SOURCE_STATUS: "$PROMETHEUS_DATA_SOURCE_STATUS >> $GF_PATHS_LOGS/grafana.log
-echo "GRAFANA_URL: "$GRAFANA_URL >> $GF_PATHS_LOGS/grafana.log
-echo "GRAFANA_PORT: "$GRAFANA_PORT >> $GF_PATHS_LOGS/grafana.log
-echo "GRAFANA_USER: "$GRAFANA_USER >> $GF_PATHS_LOGS/grafana.log
-echo "GRAFANA_PASSWORD: "$GRAFANA_PASSWORD >> $GF_PATHS_LOGS/grafana.log
+# # # Check $INFLUXDB_DATA_SOURCE status
+# # INFLUXDB_DATA_SOURCE_STATUS=`curl -s -L -i \
+# #  -H "Accept: application/json" \
+# #  -H "Content-Type: application/json" \
+# #  -X GET http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${INFLUXDB_DATA_SOURCE_WEB} | head -1 | awk '{print $2}'`
 
 # #Debug Time!
 # curl -s -L -i \
 #  -H "Accept: application/json" \
 #  -H "Content-Type: application/json" \
-#  -X GET http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${INFLUXDB_DATA_SOURCE_WEB} >>$GF_PATHS_LOGS/grafana.log 2>>$GF_PATHS_LOGS/grafana.log 
-# echo "http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${INFLUXDB_DATA_SOURCE_WEB}" >> $GF_PATHS_LOGS/grafana.log
-# echo "INFLUXDB_DATA_SOURCE_STATUS: "$INFLUXDB_DATA_SOURCE_STATUS >> $GF_PATHS_LOGS/grafana.log
+#  -X GET http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${PROMETHEUS_DATA_SOURCE} >>$GF_PATHS_LOGS/grafana.log 2>>$GF_PATHS_LOGS/grafana.log 
+# echo "http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${PROMETHEUS_DATA_SOURCE}" >> $GF_PATHS_LOGS/grafana.log
+# echo "INFLUXDB_DATA_SOURCE_STATUS: "$PROMETHEUS_DATA_SOURCE_STATUS >> $GF_PATHS_LOGS/grafana.log
 # echo "GRAFANA_URL: "$GRAFANA_URL >> $GF_PATHS_LOGS/grafana.log
 # echo "GRAFANA_PORT: "$GRAFANA_PORT >> $GF_PATHS_LOGS/grafana.log
 # echo "GRAFANA_USER: "$GRAFANA_USER >> $GF_PATHS_LOGS/grafana.log
 # echo "GRAFANA_PASSWORD: "$GRAFANA_PASSWORD >> $GF_PATHS_LOGS/grafana.log
 
-# Check if $PROMETHEUS_DATA_SOURCE exists
-if [ ${PROMETHEUS_DATA_SOURCE_STATUS} != 200 ]
-then
-  # If not exists, create one 
-  echo "Data Source: '"${PROMETHEUS_DATA_SOURCE}"' not found in Grafana configuration"
-  echo "Creating Data Source: '"$PROMETHEUS_DATA_SOURCE"'"
-  curl -L -i \
-   -H "Accept: application/json" \
-   -H "Content-Type: application/json" \
-   -X POST -d '{
-    "name":"'"${PROMETHEUS_DATA_SOURCE}"'",
-    "type":"prometheus",
-    "url":"http://'"${INFLUXDB_HOST}"':'"${INFLUXDB_PORT}"'",
-    "access":"proxy",
-    "basicAuth":false,
-    "database": "'"${PROMETHEUS_DATABASE}"'",
-    "user":"'"${PROMETHEUS_ADMIN_USER}"'",
-    "password":"'"${PROMETHEUS_ADMIN_PASSWORD}"'"}
-  ' \
-  http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources
-else
-  #Continue if it doesn't exists
-  echo "Data Source '"${PROMETHEUS_DATA_SOURCE}"' already exists."
-fi
+# # #Debug Time!
+# # curl -s -L -i \
+# #  -H "Accept: application/json" \
+# #  -H "Content-Type: application/json" \
+# #  -X GET http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${INFLUXDB_DATA_SOURCE_WEB} >>$GF_PATHS_LOGS/grafana.log 2>>$GF_PATHS_LOGS/grafana.log 
+# # echo "http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources/name/${INFLUXDB_DATA_SOURCE_WEB}" >> $GF_PATHS_LOGS/grafana.log
+# # echo "INFLUXDB_DATA_SOURCE_STATUS: "$INFLUXDB_DATA_SOURCE_STATUS >> $GF_PATHS_LOGS/grafana.log
+# # echo "GRAFANA_URL: "$GRAFANA_URL >> $GF_PATHS_LOGS/grafana.log
+# # echo "GRAFANA_PORT: "$GRAFANA_PORT >> $GF_PATHS_LOGS/grafana.log
+# # echo "GRAFANA_USER: "$GRAFANA_USER >> $GF_PATHS_LOGS/grafana.log
+# # echo "GRAFANA_PASSWORD: "$GRAFANA_PASSWORD >> $GF_PATHS_LOGS/grafana.log
+
+# # Check if $PROMETHEUS_DATA_SOURCE exists
+# if [ ${PROMETHEUS_DATA_SOURCE_STATUS} != 200 ]
+# then
+#   # If not exists, create one 
+#   echo "Data Source: '"${PROMETHEUS_DATA_SOURCE}"' not found in Grafana configuration"
+#   echo "Creating Data Source: '"$PROMETHEUS_DATA_SOURCE"'"
+#   curl -L -i \
+#    -H "Accept: application/json" \
+#    -H "Content-Type: application/json" \
+#    -X POST -d '{
+#     "name":"'"${PROMETHEUS_DATA_SOURCE}"'",
+#     "type":"prometheus",
+#     "url":"http://'"${PROMETHEUS_HOST}"':'"${PROMETHEUS_PORT}"'",
+#     "access":"proxy",
+#     "basicAuth":false,
+#     "database": "'"${PROMETHEUS_DATABASE}"'",
+#     "user":"'"${PROMETHEUS_ADMIN_USER}"'",
+#     "password":"'"${PROMETHEUS_ADMIN_PASSWORD}"'"}
+#   ' \
+#   http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@${GRAFANA_URL}:${GRAFANA_PORT}/api/datasources
+# else
+#   #Continue if it doesn't exists
+#   echo "Data Source '"${PROMETHEUS_DATA_SOURCE}"' already exists."
+# fi
 
 # # Check if $INFLUXDB_DATA_SOURCE exists
 # if [ ${INFLUXDB_DATA_SOURCE_STATUS} != 200 ]

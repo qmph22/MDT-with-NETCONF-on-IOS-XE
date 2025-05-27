@@ -16,5 +16,7 @@ RUN mkdir -p /opt/grafana/dashboards
 ADD *.json /opt/grafana/dashboards/
 ADD default-dashboard.yaml /etc/grafana/provisioning/dashboards/
 
+ADD provisioning/datasources/*.yaml /etc/grafana/provisioning/datasources/
+
 ADD run.sh /run.sh
 ENTRYPOINT ["bash", "/run.sh"]

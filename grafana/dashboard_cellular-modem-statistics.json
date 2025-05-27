@@ -22,10 +22,7 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -99,10 +96,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "exemplar": false,
           "expr": "memory_pool_percent_used{name=\"Processor\"}",
@@ -112,10 +106,7 @@
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "expr": "cpu_utilization_percentage",
           "hide": false,
@@ -128,10 +119,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -196,10 +184,7 @@
       "pluginVersion": "9.5.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "expr": "system_vmanage_is_connected",
           "legendFormat": "{{hostname}}",
@@ -211,10 +196,7 @@
       "type": "state-timeline"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -267,10 +249,7 @@
       "pluginVersion": "9.5.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "expr": "cellular_modem_radio_rsrq{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
           "legendFormat": "{{name}} RSRQ",
@@ -282,10 +261,7 @@
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -359,10 +335,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "expr": "cellular_modem_radio_rsrp{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
           "legendFormat": "{{name}} RSRP",
@@ -370,10 +343,7 @@
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "expr": "cellular_modem_radio_rsrq{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
           "hide": false,
@@ -382,10 +352,7 @@
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "expr": "cellular_modem_radio_rssi{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
           "hide": false,
@@ -394,10 +361,7 @@
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "expr": "cellular_modem_radio_snr{name=~\"Cellular0/2/1|Cellular0/3/1\"}",
           "hide": false,
@@ -410,10 +374,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -466,10 +427,7 @@
       "pluginVersion": "9.5.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "expr": "cellular_modem_radio_rssi{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
           "legendFormat": "{{name}} RSSI",
@@ -481,10 +439,7 @@
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -550,10 +505,7 @@
       "pluginVersion": "9.5.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "expr": "intf_stats_operational_status",
           "hide": false,
@@ -566,10 +518,7 @@
       "type": "state-timeline"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -622,10 +571,7 @@
       "pluginVersion": "9.5.6",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f2cc6f59-1285-407f-ace3-e378021cf21f"
-          },
+          "datasource": "Prometheus",
           "editorMode": "builder",
           "expr": "cellular_modem_radio_rsrp{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
           "legendFormat": "{{name}} RSRP",
