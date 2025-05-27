@@ -85,3 +85,4 @@ docker compose up --build
 # To Do
 1. Update the dashboard to show the relationship between an interface's operational state and administrative state
 2. Add functionality to dynamically update devices to subscribe to
+3. Add dashboard/panels in Grafana to show how relationships between data can result in a different display
