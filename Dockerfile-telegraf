@@ -7,8 +7,8 @@ RUN apt-get install -y git
 RUN mkdir /opt/monitoring/
 
 # install telegraf
-RUN wget https://dl.influxdata.com/telegraf/releases/telegraf_1.19.0-1_amd64.deb
-RUN dpkg -i telegraf_1.19.0-1_amd64.deb
+RUN wget https://dl.influxdata.com/telegraf/releases/telegraf_1.34.1-1_amd64.deb
+RUN dpkg -i telegraf_1.34.1-1_amd64.deb
 RUN mkdir /opt/monitoring/telegraf/
 
 # Clone ncclient fork from GitHub from CiscoDevNet

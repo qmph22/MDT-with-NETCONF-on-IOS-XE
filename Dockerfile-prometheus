@@ -1,13 +1,14 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 RUN apt-get update && apt-get install -y && \
     apt-get install vim -y
 RUN apt-get install wget -y
 
 # install prometheus
 RUN mkdir /opt/monitoring/
-RUN wget -P /tmp/ https://github.com/prometheus/prometheus/releases/download/v2.28.0/prometheus-2.28.0.linux-amd64.tar.gz
-RUN tar xvf /tmp/prometheus-2.28.0.linux-amd64.tar.gz --directory=/opt/monitoring/ --no-recursion
-RUN mv /opt/monitoring/prometheus-2.28.0.linux-amd64/ /opt/monitoring/prometheus/
+RUN wget -P /tmp/ https://github.com/prometheus/prometheus/releases/download/v2.53.4/prometheus-2.53.4.linux-amd64.tar.gz
+
+RUN tar xvf /tmp/prometheus-2.53.4.linux-amd64.tar.gz --directory=/opt/monitoring/ --no-recursion
+RUN mv /opt/monitoring/prometheus-2.53.4.linux-amd64/ /opt/monitoring/prometheus/
 COPY ./prometheus/prometheus-custom.yml /opt/monitoring/prometheus/
 RUN chmod +x /opt/monitoring/prometheus/*
 

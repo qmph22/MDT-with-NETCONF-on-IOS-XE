@@ -1,7 +1,7 @@
-FROM grafana/grafana:9.5.6-ubuntu
+FROM grafana/grafana:12.0.1-ubuntu
 
 LABEL author="Alexis Le Provost <alexis.leprovost@outlook.com>, qmph22"
-LABEL version="1.1.0"
+LABEL version="1.3.0"
 LABEL description="Grafana docker image"
 
 USER root
