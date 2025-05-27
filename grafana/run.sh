@@ -34,7 +34,7 @@ exec gosu grafana /usr/share/grafana/bin/grafana-server  \
   cfg:default.paths.logs="$GF_PATHS_LOGS"   \
   cfg:default.paths.plugins="$GF_PATHS_PLUGINS" &
 
-sleep 5
+# sleep 5
 
 # ###############################################################
 # # Creating Default Data Source
