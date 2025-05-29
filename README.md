@@ -33,10 +33,9 @@ or
 ```bash
 docker compose up --build
 ```
-9. Manually connect add Prometheus as a data source in Grafana until a script is made to automate it.
-10. View metrics collected by Telegraf at http://localhost:9273/metrics
-11. View metrics being stored by Prometheus at http://localhost:9090/
-12. View the dashboards in Grafana at http://localhost:3000/
+9. View metrics collected by Telegraf at http://localhost:9273/metrics
+10. View metrics being stored by Prometheus at http://localhost:9090/
+11. View the dashboards in Grafana at http://localhost:3000/
 
 ## PromQL queries supported
 
@@ -74,7 +73,6 @@ or
 ```bash
 docker compose up --build
 ```
-9. Manually connect add Prometheus as a data source in Grafana until a script is made to automate it.
 
 ## Tips
 - Streaming telemetry is preferred but if you want to use a series of NETCONF get RPCs, the Python files are in the `telegraf/rpc_get` directory. Then, modify the `telegraf/telegraf.conf` file to use the `inputs.exec` plugin.
@@ -86,3 +84,10 @@ docker compose up --build
 1. Update the dashboard to show the relationship between an interface's operational state and administrative state
 2. Add functionality to dynamically update devices to subscribe to
 3. Add dashboard/panels in Grafana to show how relationships between data can result in a different display
+4. Add dashboard for overview and one for details
+5. Add panel for all SD-WAN BFD session statistics for a router
+6. Be able to click on a stat to go into details (this might take a while)
+7. Select a router to view on Grafana via a dropdown menu
+8. Change Prometheus to use the Prometheus container instead of installing it on an Ubuntu container?
+9. Figure out why there's the `Error on ingesting out-of-order samples` error for the Prometheus container
+10. Pin versions of Python libraries and GitHub repositories in a sustainable manner
