@@ -14,12 +14,12 @@ RUN mkdir /opt/monitoring/telegraf/
 # Clone ncclient fork from GitHub from CiscoDevNet
 RUN git clone https://github.com/CiscoDevNet/ncclient /opt/monitoring/telegraf/ncclient
 
+# Install required packages for Python scripts
+RUN pip3 install xmltodict dotenv pyyaml typing six python-dateutil lxml paramiko --break-system-packages
+
 # copy NETCONF scripts/files and telegraf config file into the telegraf monitoring folder
 COPY ./telegraf/* /opt/monitoring/telegraf/
 RUN chmod +x /opt/monitoring/telegraf/*
-
-# Install required packages for Python scripts
-RUN pip3 install xmltodict dotenv pyyaml typing six python-dateutil lxml paramiko --break-system-packages
 
 WORKDIR /opt/monitoring/telegraf
 CMD ["telegraf", "--config", "/opt/monitoring/telegraf/telegraf.conf"]
