@@ -157,8 +157,8 @@ def connectRouter(router: str, config, reattempts=3):
                         routerManagers.update({router: m})
                         success = True
                         break
-                    except:
-                        logger.warning(f"Credential {[config['devices'][router]['credentials'][credential]['password_env']]} for {router} failed on attempt {i + 1}")
+                    except Exception as e:
+                        logger.warning(f"Credential {[config['devices'][router]['credentials'][credential]['password_env']]} for {router} failed on attempt {i + 1}. Exception: {e}")
                         routerManagers.update({router: None})
             if success:
                 return True
@@ -228,7 +228,7 @@ def main():
             else:
                 logging.warning(f"Unable to subscribe to telemetry from router {router} on the first attempt")
         else:
-            logging.warning(f"Unable to connect to {router} on the first attempt")
+            logging.error(f"Unable to connect to {router} on the first attempt")
 
     # A loop to keep the program running. The listeners from the ncclient will use the callback notificationCallback whenever there are notifications from the routers.
     # While we're using cycles, attempt to reconnect and resubscribe for any routers that have lost their connection. Will need to see if I can do this in an async manner.
@@ -236,14 +236,20 @@ def main():
         managers = routerManagers
         if len(managers) > 0: # Without this, the script may fail on startup.
             for router in managers:
-                if not routerManagers[router].connected:
-                    logger.warning(f"Router {router} has lost connection while streaming. Reconnecting.")
+                if managers.get(router) is None:
                     if connectRouter(router=router, config=config, reattempts=1):
                         logging.info(f"Reconnected to router {router}")
                         if subscribe(router=router, xpaths=xpaths):
                             logging.info(f"Re-subscribed to telemetry from router {router}")
                     else:
-                        logger.warning(f"Failed to reconnect to router {router}")
+                        logger.warning(f"Failed to reconnect to router {router}")     
+                else:
+                    if not routerManagers[router].connected:
+                        logger.warning(f"Router {router} has lost connection while streaming. Reconnecting.")
+                        if connectRouter(router=router, config=config, reattempts=1):
+                            logging.info(f"Reconnected to router {router}")
+                            if subscribe(router=router, xpaths=xpaths):
+                                logging.info(f"Re-subscribed to telemetry from router {router}")
         time.sleep(.25) # If this is not present, the CPU utilization can go to 100%
 
 if __name__ == "__main__":
