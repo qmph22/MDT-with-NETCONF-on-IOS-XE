@@ -9,11 +9,15 @@ sys.path.append('ncclient')
 from ncclient import manager
 import time
 import logging
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 logging.getLogger().setLevel(logging.WARNING)
 
-subscriptions = {}
+# This should be a dictionary of lists. The key is always a router and the value is always a list representing the router's current active subscriptions.
+# defaultdict(list) allows us to call the update method on a key in the dictionary without having to first check whether the value exists. We can simply call the update method without checking if the router exists first.
+activeSubscriptions = defaultdict(list)
+# This should be a dictionary. The key is always a router and the value is always the router's Manager instance from ncclient. If the value is None, an attempt has been made but there is a problem with connecting to the router.
 routerManagers = {}
 
 def notificationCallback(notif):
@@ -29,11 +33,17 @@ def notificationCallback(notif):
     hostname = ''
     try:
         logger.debug('Trying to get the router associated with the subscription ID {subscriptionID}')
-        hostname = subscriptions[subscriptionID]['hostname']
-        logger.debug('Sucessfully found the router associated with the subscription ID {subscriptionID}')
+        #hostname = subscriptions[subscriptionID]['hostname']
+        for router in activeSubscriptions:
+                for subscription in activeSubscriptions[router]:
+                    if subscription['subscription_id'] == subscriptionID:
+                        hostname = router
+                        logger.debug('Sucessfully found the router associated with the subscription ID {subscriptionID}')
+        if hostname == '':
+            logger.debug('Unable to find hostname associated with subscription ID {subscriptionID}')
     except:
         hostname = ''
-        logger.debug('Subscription ID could not be read from the callback. It could be due to the hostname and subscription IDs not being stored in the subscriptions variable yet')
+        logger.debug('Unable to find hostname associated with subscription ID {subscriptionID}. It could be due to subscription ID could not be read from the callback or the hostname and subscription IDs not being stored in the activeSubscriptions variable yet')
 
     if rpc_reply_dict['notification']['push-update']:
         for content in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']:
@@ -190,7 +200,6 @@ def subscribe(router: str, config):
 
         # Get xpaths from provided config
         xpaths = list(config['devices'][router]['xpaths'])
-
         for xpath in xpaths:
             s = manager.establish_subscription(
                 notificationCallback,
@@ -202,18 +211,18 @@ def subscribe(router: str, config):
             if s.subscription_result.endswith('ok'):
                 logger.info('Subscription Id     : %d' % s.subscription_id)
                 subs.append(s.subscription_id)
-                subscriptions.update({s.subscription_id: {"hostname": router, "xpath": xpath}})
-                
+                activeSubscriptions[router].insert(0, {'subscription_id': s.subscription_id, 'xpath': xpath})            
+
                 # Remove old subscriptions that have the same xpath
                 subscriptionToDelete = []
-                for subscription in subscriptions: 
-                    if subscriptions[subscription]['xpath'] == xpath and subscription != s.subscription_id:
+
+                for subscription in activeSubscriptions[router]:
+                    if subscription['subscription_id'] != s.subscription_id and subscription['xpath'] == xpath:
                         logger.debug(f"Marking subscription {subscription} for removal.")
                         subscriptionToDelete.append(subscription)
                         logger.debug(f"subscriptionToDelete is now {subscriptionToDelete}")
                 for oldSubscription in subscriptionToDelete:
-                    subscriptions.pop(oldSubscription)
-                    logger.debug(f"subscriptions after pop of {oldSubscription} is now {subscriptions}")
+                    activeSubscriptions[router].remove(oldSubscription)
                 
         if not len(subs):
             logger.info('No active subscriptions')
