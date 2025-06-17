@@ -17,6 +17,13 @@ devices:
         hostkey_verify: false
         device_params:
             name: 'iosxe'
+        # Define xpaths to subscribe to. All supported xpaths are listed here in this example.
+        xpaths:
+            - "/process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds"
+            - "/cellwan-ios-xe-oper:cellwan-oper-data/cellwan-radio"
+            - "/interfaces-ios-xe-oper:interfaces/interface"
+            - "/memory-ios-xe-oper:memory-statistics/memory-statistic"
+            - "/process-memory-ios-xe-oper:memory-usage-processes/memory-usage-process"
     router2:
         host: 10.0.0.2
         port: 830
@@ -33,3 +40,10 @@ devices:
         hostkey_verify: false
         device_params:
             name: 'iosxe'
+        # Define xpaths to subscribe to. All supported xpaths are listed here in this example.
+        xpaths:
+            - "/process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds"
+            - "/cellwan-ios-xe-oper:cellwan-oper-data/cellwan-radio"
+            - "/interfaces-ios-xe-oper:interfaces/interface"
+            - "/memory-ios-xe-oper:memory-statistics/memory-statistic"
+            - "/process-memory-ios-xe-oper:memory-usage-processes/memory-usage-process"

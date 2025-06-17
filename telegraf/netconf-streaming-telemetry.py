@@ -115,6 +115,23 @@ def notificationCallback(notif):
                             stats_array.append(dict)
                     print(json.dumps(stats_array))
 
+                case "sessions-list":
+                    array = []
+                    for session in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["bfd"]["sessions-list"]:
+                        dict = {
+                            "protocol": session['proto'],
+                            "system-ip": session['system-ip'],
+                            "site-id": session['site-id'],
+                            "local-color": session['local-color'],
+                            "remote-color": session['color'],
+                            "state": session['state'],                                                                                     
+                            "field": "bfd_sessions"
+                        }  
+                        if hostname:
+                            dict.update({"hostname": hostname})
+                        array.append(dict)
+                    print(json.dumps(array))
+
                 case _:
                     print(f"No matching case for {content}",file=sys.stderr)
                     logger.error(f"No matching case for {content}")
@@ -211,17 +228,9 @@ def main():
     # Read the names of the routers from the config file
     routers = list(config['devices'].keys())
 
-    # Define xpaths that will be used to subscribe to telemetry data. Be sure to handle each item in notificationCallback.
-    xpaths = [
-        "/process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds", 
-        "/cellwan-ios-xe-oper:cellwan-oper-data/cellwan-radio",
-        "/interfaces-ios-xe-oper:interfaces/interface",
-        "/memory-ios-xe-oper:memory-statistics/memory-statistic",
-        "/process-memory-ios-xe-oper:memory-usage-processes/memory-usage-process"
-        ]
-
     # Attempt to connect to every router. Upon a successful connection, subscribe to the telemetry data
     for router in routers:
+        xpaths = list(config['devices'][router]['xpaths'])
         if connectRouter(router=router, config=config):
             if subscribe(router=router, xpaths=xpaths):
                 logging.info(f"Subscribed to telemetry from router {router}")
