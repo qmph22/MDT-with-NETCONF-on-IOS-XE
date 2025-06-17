@@ -115,6 +115,23 @@ def notificationCallback(notif):
                             stats_array.append(dict)
                     print(json.dumps(stats_array))
 
+                case "sessions-list":
+                    array = []
+                    for session in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["bfd"]["sessions-list"]:
+                        dict = {
+                            "protocol": session['proto'],
+                            "system-ip": session['system-ip'],
+                            "site-id": session['site-id'],
+                            "local-color": session['local-color'],
+                            "remote-color": session['color'],
+                            "state": session['state'],                                                                                     
+                            "field": "bfd_sessions"
+                        }  
+                        if hostname:
+                            dict.update({"hostname": hostname})
+                        array.append(dict)
+                    print(json.dumps(array))
+
                 case _:
                     print(f"No matching case for {content}",file=sys.stderr)
                     logger.error(f"No matching case for {content}")
@@ -165,11 +182,15 @@ def connectRouter(router: str, config, reattempts=3):
             else:
                 return False
 
-def subscribe(router: str, xpaths: list[str]):
+def subscribe(router: str, config):
         manager = routerManagers[router]
         subs = []
         period = 100 #centiseconds
         #dampening_period = 100 #centiseconds, pick one or the other
+
+        # Get xpaths from provided config
+        xpaths = list(config['devices'][router]['xpaths'])
+
         for xpath in xpaths:
             s = manager.establish_subscription(
                 notificationCallback,
@@ -211,19 +232,10 @@ def main():
     # Read the names of the routers from the config file
     routers = list(config['devices'].keys())
 
-    # Define xpaths that will be used to subscribe to telemetry data. Be sure to handle each item in notificationCallback.
-    xpaths = [
-        "/process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds", 
-        "/cellwan-ios-xe-oper:cellwan-oper-data/cellwan-radio",
-        "/interfaces-ios-xe-oper:interfaces/interface",
-        "/memory-ios-xe-oper:memory-statistics/memory-statistic",
-        "/process-memory-ios-xe-oper:memory-usage-processes/memory-usage-process"
-        ]
-
     # Attempt to connect to every router. Upon a successful connection, subscribe to the telemetry data
     for router in routers:
         if connectRouter(router=router, config=config):
-            if subscribe(router=router, xpaths=xpaths):
+            if subscribe(router=router, config=config):
                 logging.info(f"Subscribed to telemetry from router {router}")
             else:
                 logging.warning(f"Unable to subscribe to telemetry from router {router} on the first attempt")
@@ -239,7 +251,7 @@ def main():
                 if managers.get(router) is None:
                     if connectRouter(router=router, config=config, reattempts=1):
                         logging.info(f"Reconnected to router {router}")
-                        if subscribe(router=router, xpaths=xpaths):
+                        if subscribe(router=router, config=config):
                             logging.info(f"Re-subscribed to telemetry from router {router}")
                     else:
                         logger.warning(f"Failed to reconnect to router {router}")     
@@ -248,7 +260,7 @@ def main():
                         logger.warning(f"Router {router} has lost connection while streaming. Reconnecting.")
                         if connectRouter(router=router, config=config, reattempts=1):
                             logging.info(f"Reconnected to router {router}")
-                            if subscribe(router=router, xpaths=xpaths):
+                            if subscribe(router=router, config=config):
                                 logging.info(f"Re-subscribed to telemetry from router {router}")
         time.sleep(.25) # If this is not present, the CPU utilization can go to 100%
 
