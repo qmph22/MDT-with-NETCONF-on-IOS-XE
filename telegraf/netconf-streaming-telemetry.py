@@ -6,7 +6,7 @@ import os
 import yaml
 import sys
 sys.path.append('ncclient')
-from ncclient import manager
+from ncclient import manager # type: ignore
 import time
 import logging
 from collections import defaultdict
@@ -63,6 +63,101 @@ def notificationCallback(notif):
                         
                 case "cellwan-oper-data":
                     stats_array = []
+                    # Radio Access Technology mappings according to typedef rat-technology of https://github.com/YangModels/yang/blob/main/vendor/cisco/xe/17121/Cisco-IOS-XE-cellwan-oper.yang
+                    rat_technology_mapping = {
+                        "system-mode-none": {
+                            "value": 0,
+                            "description": "Radio technology selected is none"
+                        },
+                        "system-mode-gprs": {
+                            "value": 1,
+                            "description": "Radio technology selected is GPRS (General Packet Radio Service)"
+                        },
+                        "system-mode-edge": {
+                            "value": 2,
+                            "description": "Radio technology selected is EDGE (Enhanced Data rates for GSM Evolution)"
+                        },
+                        "system-mode-umts": {
+                            "value": 3,
+                            "description": "Radio technology selected is UMTS (Universal Mobile Telecommunications System)"
+                        },
+                        "system-mode-hsdpa": {
+                            "value": 4,
+                            "description": "Radio technology selected is HSDPA (High Speed Downlink Packet Access)"
+                        },
+                        "system-mode-hsupa": {
+                            "value": 5,
+                            "description": "Radio technology selected is HSUPA (High Speed Uplink Packet Access)"
+                        },
+                        "system-mode-hspa": {
+                            "value": 6,
+                            "description": "Radio technology selected is HSPA (High Speed Packet Access)"
+                        },
+                        "system-mode-hspa-plus": {
+                            "value": 7,
+                            "description": "Radio technology selected is HSPA+ (Evolved High Speed Packet Access)"
+                        },
+                        "system-mode-lte-fdd": {
+                            "value": 8,
+                            "description": "Radio technology selected is LTE-FDD (Long Term Evolution-Frequency Division Duplex)"
+                        },
+                        "system-mode-lte-tdd": {
+                            "value": 9,
+                            "description": "Radio technology selected is LTE-TDD (Long Term Evolution-Time Division Duplex)"
+                        },
+                        "system-mode-lte-e-hrpd-1x-rtt": {
+                            "value": 10,
+                            "description": "Radio technology selected is LTE / eHRPD / 1xRTT"
+                        },
+                        "system-mode-lte-e-hrpd-evdo": {
+                            "value": 11,
+                            "description": "Radio technology selected is LTE / eHRPD / EVDO"
+                        },
+                        "system-mode-evdo": {
+                            "value": 12,
+                            "description": "Radio technology selected is EVDO (Evolution-Data Optimized)"
+                        },
+                        "system-mode-evdo-reva": {
+                            "value": 13,
+                            "description": "Radio technology selected is EVDO / REVA"
+                        },
+                        "system-mode-hsdpa-n-wcdma": {
+                            "value": 14,
+                            "description": "Radio technology selected is HSDPA & WCDMA"
+                        },
+                        "system-mode-wcdma-n-hsupa": {
+                            "value": 15,
+                            "description": "Radio technology selected is WCDMA & HSUPA"
+                        },
+                        "system-mode-hsdpa-n-hsupa": {
+                            "value": 16,
+                            "description": "Radio technology selected is HSDPA & HSUPA"
+                        },
+                        "system-mode-hsdpa-plus-n-wcdma": {
+                            "value": 17,
+                            "description": "Radio technology selected is HSDPA+ & WCDMA"
+                        },
+                        "system-mode-hsdpa-plus-n-hsupa": {
+                            "value": 18,
+                            "description": "Radio technology selected is HSDPA+ & HSUPA"
+                        },
+                        "system-mode-dc-hsdpa-plus-n-wcdma": {
+                            "value": 19,
+                            "description": "Radio technology selected is DC HSDPA+ & WCDMA"
+                        },
+                        "system-mode-dc-hsdpa-plus-n-hsupa": {
+                            "value": 20,
+                            "description": "Radio technology selected is DC HSDPA+ & HSUPA"
+                        },
+                        "system-mode-null-bearer": {
+                            "value": 21,
+                            "description": "Radio technology selected is null bearer"
+                        },
+                        "system-mode-unknown": {
+                            "value": 22,
+                            "description": "Radio technology selected is unknown"
+                        }
+                    }
                     for cellularModem in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["cellwan-oper-data"]["cellwan-radio"]:
                         if "online" in str(cellularModem["radio-power-mode"]):
                             dict = {
@@ -71,6 +166,7 @@ def notificationCallback(notif):
                                 "radio_rsrp": float(cellularModem["radio-rsrp"]),
                                 "radio_rsrq": float(cellularModem["radio-rsrq"]),
                                 "radio_snr": float(cellularModem["radio-snr"]),
+                                "radio-rat-selected": rat_technology_mapping[str(cellularModem["radio-rat-selected"])]['value'],
                                 "field": "cellular_modem"
                             }
                             if hostname:
