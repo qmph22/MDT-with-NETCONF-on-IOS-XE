@@ -52,6 +52,7 @@ docker compose up --build
 - cellular_modem_radio_rsrq
 - cellular_modem_radio_rssi
 - cellular_modem_radio_snr
+- system_vmanage_is_connected
 
 # Development
 1. Clone the repository with `git clone https://github.com/qmph22/MDT-with-NETCONF-on-IOS-XE.git`
@@ -87,7 +88,6 @@ docker compose up --build
 4. Add dashboard for overview and one for details
 5. Add panel for all SD-WAN BFD session statistics for a router
 6. Be able to click on a stat to go into details (this might take a while)
-7. Select a router to view on Grafana via a dropdown menu
-8. Change Prometheus to use the Prometheus container instead of installing it on an Ubuntu container?
-9. Figure out why there's the `Error on ingesting out-of-order samples` error for the Prometheus container
-10. Pin versions of Python libraries and GitHub repositories in a sustainable manner
+7. Change Prometheus to use the Prometheus container instead of installing it on an Ubuntu container?
+8. Figure out why there's the `Error on ingesting out-of-order samples` error for the Prometheus container
+9. Pin versions of Python libraries and GitHub repositories in a sustainable manner
