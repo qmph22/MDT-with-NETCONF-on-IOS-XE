@@ -30,6 +30,19 @@ def dict_to_telegraf_json(rpc_reply_dict: Dict, hostname: str) -> str:
 
     return json.dumps(stats_array)  # return JSON formatted data
 
+def parseRPC(rpc_reply_dict: Dict, hostname: str) -> str:
+    """
+    """
+
+    dict = {
+        "vmanage-is-connected": 1 if rpc_reply_dict["rpc-reply"]["data"]["system"]["vmanage-is-connected"]=="true" else 0,
+        "field": "system"
+    }  # trying to get rate of consumption of processes
+    if hostname:
+        dict.update({"hostname": hostname})
+
+    return json.dumps(dict)  # return JSON formatted data
+
 def connectRouter(router: str, config, reattempts=3):
         assert reattempts > 0
         credentials = config['devices'][router]['credentials']
@@ -78,20 +91,24 @@ def main():
         </filter>
         """
     # Attempt to connect to every router. Upon a successful connection, subscribe to the telemetry data
+    collectedJson = []
+    testArray = []
     for router in routers:
         if connectRouter(router=router, config=config):
-            for manager in routerManagers:
-                netconf_rpc_reply = routerManagers[manager].get(
-                            filter = netconf_filter
-                        ).xml
-                netconf_reply_dict = xmltodict.parse(netconf_rpc_reply)
-                telegraf_json_input = dict_to_telegraf_json(netconf_reply_dict, router)
-                # telegraf needs data in a certain data format.
-                # I have chosen JSON data that will be picked up by the exec plugin
-                print(telegraf_json_input)
+            netconf_rpc_reply = routerManagers[router].get(
+                        filter = netconf_filter
+                    ).xml
+            netconf_reply_dict = xmltodict.parse(netconf_rpc_reply)
+            telegraf_json_input = dict_to_telegraf_json(netconf_reply_dict, router)
+            # telegraf needs data in a certain data format.
+            # I have chosen JSON data that will be picked up by the exec plugin
+            collectedJson.append(telegraf_json_input)
+            testArray.append(parseRPC(netconf_reply_dict, router))
         else:
             logging.warning(f"Unable to connect to {router}")
-
+    if len(collectedJson) != 0:
+        #print(collectedJson)
+        print('[' + ','.join(testArray) + ']')
 
 if __name__ == "__main__":
     main()
