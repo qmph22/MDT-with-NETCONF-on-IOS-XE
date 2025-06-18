@@ -101,22 +101,30 @@
       "targets": [
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "memory_pool_percent_used{name=\"Processor\"}",
+          "expr": "memory_pool_percent_used{hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
           "instant": false,
           "legendFormat": "{{hostname}} Memory Utilization Percentage",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
         },
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "cpu_utilization_percentage",
+          "expr": "cpu_utilization_percentage{hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
           "hide": false,
+          "includeNullMetadata": true,
           "legendFormat": "{{hostname}} CPU {{time_period}} Utilization Percentage",
           "range": true,
-          "refId": "B"
+          "refId": "B",
+          "useBackend": false
         }
       ],
       "title": "Device Resource Utilization",
@@ -187,14 +195,18 @@
       "targets": [
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "system_vmanage_is_connected",
+          "expr": "system_vmanage_is_connected{hostname=~\"$dashboardHostname\"}",
           "format": "time_series",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
           "instant": false,
           "legendFormat": "{{hostname}}",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
         }
       ],
       "title": "Is Connected to vManage",
@@ -257,11 +269,15 @@
       "targets": [
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "cellular_modem_radio_rsrq{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
-          "legendFormat": "{{name}} RSRQ",
+          "expr": "cellular_modem_radio_rsrq{name!~\"Cellular0/2/1|Cellular0/3/1\", hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{hostname}} {{name}} RSRQ",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
         }
       ],
       "title": "Cellular Modem Statistics - RSRQ",
@@ -347,38 +363,54 @@
       "targets": [
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "cellular_modem_radio_rsrp{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
-          "legendFormat": "{{name}} RSRP",
+          "expr": "cellular_modem_radio_rsrp{name!~\"Cellular0/2/1|Cellular0/3/1\", hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{hostname}} {{name}} RSRP",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
         },
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "cellular_modem_radio_rsrq{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
+          "expr": "cellular_modem_radio_rsrq{name!~\"Cellular0/2/1|Cellular0/3/1\", hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
           "hide": false,
-          "legendFormat": "{{name}} RSRQ",
+          "includeNullMetadata": true,
+          "legendFormat": "{{hostname}} {{name}} RSRQ",
           "range": true,
-          "refId": "B"
+          "refId": "B",
+          "useBackend": false
         },
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "cellular_modem_radio_rssi{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
+          "expr": "cellular_modem_radio_rssi{name!~\"Cellular0/2/1|Cellular0/3/1\", hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
           "hide": false,
-          "legendFormat": "{{name}} RSSI",
+          "includeNullMetadata": true,
+          "legendFormat": "{{hostname}} {{name}} RSSI",
           "range": true,
-          "refId": "C"
+          "refId": "C",
+          "useBackend": false
         },
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "cellular_modem_radio_snr{name=~\"Cellular0/2/1|Cellular0/3/1\"}",
+          "expr": "cellular_modem_radio_snr{name=~\"Cellular0/2/1|Cellular0/3/1\", hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
           "hide": false,
-          "legendFormat": "{{name}} SNR",
+          "includeNullMetadata": true,
+          "legendFormat": "{{hostname}} {{name}} SNR",
           "range": true,
-          "refId": "D"
+          "refId": "D",
+          "useBackend": false
         }
       ],
       "title": "Cellular Modem Statistics - Over Time",
@@ -441,11 +473,15 @@
       "targets": [
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "cellular_modem_radio_rssi{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
-          "legendFormat": "{{name}} RSSI",
+          "expr": "cellular_modem_radio_rssi{name!~\"Cellular0/2/1|Cellular0/3/1\", hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{hostname}} {{name}} RSSI",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
         }
       ],
       "title": "Cellular Modem Statistics - RSSI",
@@ -526,12 +562,16 @@
       "targets": [
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "intf_stats_operational_status",
+          "expr": "intf_stats_operational_status{hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
           "hide": false,
+          "includeNullMetadata": true,
           "legendFormat": "{{hostname}} - {{name}}",
           "range": true,
-          "refId": "B"
+          "refId": "B",
+          "useBackend": false
         }
       ],
       "title": "Interface Operational Status",
@@ -594,11 +634,15 @@
       "targets": [
         {
           "datasource": "Prometheus",
+          "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "cellular_modem_radio_rsrp{name!~\"Cellular0/2/1|Cellular0/3/1\"}",
+          "expr": "cellular_modem_radio_rsrp{name!~\"Cellular0/2/1|Cellular0/3/1\", hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
           "legendFormat": "{{name}} RSRP",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
         }
       ],
       "title": "Cellular Modem Statistics - RSRP",
@@ -610,7 +654,35 @@
   "schemaVersion": 41,
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": ".*",
+        "allowCustomValue": true,
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "definition": "label_values(cpu_utilization_percentage,hostname)",
+        "description": "Used to filter all panels by a desired hostname",
+        "includeAll": true,
+        "label": "Filter by Hostname",
+        "multi": true,
+        "name": "dashboardHostname",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(cpu_utilization_percentage,hostname)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-15m",
