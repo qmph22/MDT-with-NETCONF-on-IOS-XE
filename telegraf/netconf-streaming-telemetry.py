@@ -221,26 +221,34 @@ def notificationCallback(notif):
                             stats_array.append(dict)
                     print(json.dumps(stats_array))
 
-                case "sessions-list":
-                    array = []
-                    for session in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["bfd"]["sessions-list"]:
-                        dict = {
-                            "protocol": session['proto'],
-                            "system-ip": session['system-ip'],
-                            "site-id": session['site-id'],
-                            "local-color": session['local-color'],
-                            "remote-color": session['color'],
-                            "state": session['state'],                                                                                     
-                            "field": "bfd_sessions"
-                        }  
-                        if hostname:
-                            dict.update({"hostname": hostname})
-                        array.append(dict)
-                    print(json.dumps(array))
+                # case "bfd": # For some reason, some routers are replying with nothing in 'datastore-contents-xml'
+                #     array = []
+                #     # Can be pulled via netconf get but not via yang-push
+                #     # for session in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["bfd"]["sessions-list"]:
+                #     #     dict = {
+                #     #         "protocol": session['proto'],
+                #     #         "system-ip": session['system-ip'],
+                #     #         "site-id": session['site-id'],
+                #     #         "local-color": session['local-color'],
+                #     #         "remote-color": session['color'],
+                #     #         "state": session['state'],                                                                                     
+                #     #         "field": "bfd_sessions"
+                #     #     }  
+                #     for tloc in rpc_reply_dict['notification']['push-update']['datastore-contents-xml']["bfd"]["tloc-summary-list"]:
+                #         dict = {
+                #             "name": tloc['if-name'],
+                #             "sessions-up": tloc['sessions-up'],
+                #             "sessions-total": tloc['sessions-total'],                                                                                     
+                #             "field": "bfd_sessions"
+                #         }  
+                #         if hostname:
+                #             dict.update({"hostname": hostname})
+                #         array.append(dict)
+                #     print(json.dumps(array))
 
-                case _:
-                    print(f"No matching case for {content}",file=sys.stderr)
-                    logger.error(f"No matching case for {content}")
+                # case _:
+                #     print(f"No matching case for {content}",file=sys.stderr)
+                #     logger.error(f"No matching case for {content}")
 
 def subscriptionCallback(notif):
     print('-->>')
@@ -308,7 +316,6 @@ def subscribe(router: str, config):
                 logger.info('Subscription Id     : %d' % s.subscription_id)
                 subs.append(s.subscription_id)
                 activeSubscriptions[router].insert(0, {'subscription_id': s.subscription_id, 'xpath': xpath})            
-
                 # Remove old subscriptions that have the same xpath
                 subscriptionToDelete = []
 
