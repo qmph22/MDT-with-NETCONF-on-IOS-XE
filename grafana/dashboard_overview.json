@@ -1392,11 +1392,13 @@
     },
     {
       "datasource": "Prometheus",
+      "description": "Pulled every 30 seconds with NETCONF get",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "displayName": "$dashboardHostname - BFD Sessions",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -1405,16 +1407,20 @@
                 "color": "green"
               },
               {
-                "color": "#EAB839",
-                "value": 50
+                "color": "red",
+                "value": 0
               },
               {
-                "color": "red",
-                "value": 75
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "green",
+                "value": 2
               }
             ]
           },
-          "unit": "percent"
+          "unit": "none"
         },
         "overrides": []
       },
@@ -1424,7 +1430,7 @@
         "x": 12,
         "y": 8
       },
-      "id": 2,
+      "id": 18,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -1448,17 +1454,35 @@
           "datasource": "Prometheus",
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "cpu_utilization_percentage{hostname=~\"$dashboardHostname\"}",
+          "expr": "bfd_sessions_state{hostname=~\"$dashboardHostname\"}",
+          "format": "time_series",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
-          "legendFormat": "{{hostname}} CPU {{time_period}} Utilization Percentage",
+          "interval": "",
+          "legendFormat": "BFD Sessions",
           "range": true,
           "refId": "B",
           "useBackend": false
         }
       ],
-      "title": "$dashboardHostname - CPU Utilization",
+      "title": "$dashboardHostname - BFD Sessions",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "",
+            "mode": "reduceRow",
+            "reduce": {
+              "include": [
+                "BFD Sessions"
+              ],
+              "reducer": "sum"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
       "type": "stat"
     },
     {
@@ -1532,6 +1556,77 @@
         }
       ],
       "title": "$dashboardHostname - Memory Utilization",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "#EAB839",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 75
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 12,
+        "y": 15
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.1",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "cpu_utilization_percentage{hostname=~\"$dashboardHostname\"}",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{hostname}} CPU {{time_period}} Utilization Percentage",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        }
+      ],
+      "title": "$dashboardHostname - CPU Utilization",
       "type": "stat"
     },
     {
@@ -1652,5 +1747,5 @@
   "timezone": "",
   "title": "Overview Dashboard",
   "uid": "d95e079a-79fa-4593-84cc-78bb0264e16c",
-  "version": 56
+  "version": 57
 }
