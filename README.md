@@ -17,14 +17,11 @@ Have [docker-compose](https://docs.docker.com/compose/install/) installed, along
 ## Running this tool
 
 1. Clone the repository with `git clone https://github.com/qmph22/MDT-with-NETCONF-on-IOS-XE.git`
-2. Move into the telegraf directory with `cd MDT-with-NETCONF-on-IOS-XE/telegraf`
-3. Clone the Python ncclient library from Cisco DevNet with `clone https://github.com/CiscoDevNet/ncclient.git` since `ncclient` from pip does not contain the `establish-subscription` functionality at this time.
-4. Go to the top level directory of the project with `cd ..`
-6. Create an environmental variable in the `.env` file. Place your passwords in there noting the name of the environmental variable per password. Create multiple environmental variables if you intend on using multiple passwords.
+2. Create an environmental variable in the `.env` file. Place your passwords in there noting the name of the environmental variable per password. Create multiple environmental variables if you intend on using multiple passwords.
    - You can clone the `.env.example` file with `cp .env.example .env` to get started.
-7. Specify your devices in `telegraf/networkdevices.yml`. For the password, specify the environmental variable name you created in the `.env` file.
+3. Specify your devices in `telegraf/networkdevices.yml`. For the password, specify the environmental variable name you created in the `.env` file.
    - You can copy `networkdevices.example.yml` to `networkdevices.yml` with `cp telegraf/networkdevices.example.yml telegraf/networkdevices.yml` to help you get started.
-8. Run the following:
+4. Run the following:
 ```bash
 docker-compose build
 docker-compose up
@@ -33,9 +30,9 @@ or
 ```bash
 docker compose up --build
 ```
-9. View metrics collected by Telegraf at http://localhost:9273/metrics
-10. View metrics being stored by Prometheus at http://localhost:9090/
-11. View the dashboards in Grafana at http://localhost:3000/
+5. View metrics collected by Telegraf at http://localhost:9273/metrics
+6. View metrics being stored by Prometheus at http://localhost:9090/
+7. View the dashboards in Grafana at http://localhost:3000/
 
 ## PromQL queries supported
 
